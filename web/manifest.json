@@ -1,6 +1,6 @@
 {
-    "name": "login_signup",
-    "short_name": "login_signup",
+    "name": "app_iot",
+    "short_name": "app_iot",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
