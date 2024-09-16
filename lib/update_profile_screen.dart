@@ -1,8 +1,11 @@
+import 'package:app_iot/customNavBar.dart';
+import 'package:app_iot/home.dart';
 import 'package:app_iot/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class UpdateProfileScreen extends StatefulWidget {
   @override
@@ -10,8 +13,11 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
-
   String? username;
+  final TextEditingController nomeController = TextEditingController();
+  final TextEditingController cognomeController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController telefonoController = TextEditingController();
 
   @override
   void initState() {
@@ -25,13 +31,58 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
     if (token != null) {
       final decodedToken = JwtDecoder.decode(token);
-      decodedToken.forEach((key, value) {
-        print('$key: $value');
-      });
-
       setState(() {
         username = decodedToken['user'];
       });
+    }
+  }
+
+  Future<void> _updateUser() async {
+    final url = Uri.parse('http://10.0.2.2:5001/api/utenti/update/$username');
+
+    // Crea un oggetto JSON dinamico che includa solo i campi non vuoti
+    Map<String, dynamic> body = {};
+
+    if (nomeController.text.isNotEmpty) {
+      body['nome'] = nomeController.text;
+    }
+    if (cognomeController.text.isNotEmpty) {
+      body['cognome'] = cognomeController.text;
+    }
+    if (emailController.text.isNotEmpty) {
+      body['email'] = emailController.text;
+    }
+    if (telefonoController.text.isNotEmpty) {
+      body['numero_telefono'] = telefonoController.text;
+    }
+
+    // Se non ci sono campi da aggiornare, esci dalla funzione
+    if (body.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Nessun campo da aggiornare')),
+      );
+      return;
+    }
+
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      // Gestisci il successo dell'aggiornamento
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Utente aggiornato con successo')),
+      );
+      Navigator.push(context, MaterialPageRoute(builder: (e) => CustomNavBar()));
+    } else {
+      // Gestisci gli errori
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Errore durante l\'aggiornamento')),
+      );
     }
   }
 
@@ -96,20 +147,18 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ],
                       ),
                       const SizedBox(height: 50,),
-                      input(icon: Icons.perm_identity, label: "Nome"),
+                      input(icon: Icons.perm_identity, label: "Nome", controller: nomeController),
                       const SizedBox(height: 20,),
-                      input(icon: Icons.perm_identity, label: "Cognome"),
+                      input(icon: Icons.perm_identity, label: "Cognome", controller: cognomeController),
                       const SizedBox(height: 20,),
-                      input(icon: Icons.perm_identity, label: "Username"),
+                      input(icon: Icons.email_outlined, label: "Email", controller: emailController),
                       const SizedBox(height: 20,),
-                      input(icon: Icons.email_outlined, label: "Email"),
-                      const SizedBox(height: 20,),
-                      input(icon: Icons.phone, label: "Numero di Telefono"),
+                      input(icon: Icons.phone, label: "Numero di Telefono", controller: telefonoController),
                       const SizedBox(height: 30,),
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: _updateUser,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0XFF29E2FD),
                             side: BorderSide.none,
@@ -122,22 +171,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 30,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text.rich(
-                            TextSpan(
-                              text: "aaaa",
-                              style: TextStyle(fontSize: 12, color: Colors.white),
-                              children: [
-                                TextSpan(
-                                    text: " bbb", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
@@ -150,11 +183,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 }
 
-Widget input({required IconData icon, required String label}) {
+Widget input({required IconData icon, required String label, required TextEditingController controller}) {
   return Form(
     child: Column(
       children: [
         TextFormField(
+          controller: controller,
           style: TextStyle(color: Colors.grey[300]),
           cursorColor: Colors.grey[300],
           decoration: InputDecoration(

@@ -50,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen>{
   }
 
   Future<void> _findUser() async {
-    final url = Uri.parse('http://192.168.1.7:5001/api/utenti/find_by_username/$username'); // Cambia l'URL se necessario
+    final url = Uri.parse('http://10.0.2.2:5001/api/utenti/find_by_username/$username'); // Cambia l'URL se necessario
     try {
       final response = await http.get(
         url,

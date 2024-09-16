@@ -44,7 +44,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.7:5001/api/incidenti/get_incidenti_by_username/$username'));
+      final response = await http.get(Uri.parse('http://10.0.2.2:5001/api/incidenti/get_incidenti_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta
@@ -60,7 +60,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
         setState(() {
           _incidents = data.map((item) {
             if (item is Map<String, dynamic>) {
-              return item['incident'] as String? ?? 'No incident information';
+              return item['date'] as String? ?? 'No incident information';
             } else {
               return 'Invalid item format';
             }
@@ -88,7 +88,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.7:5001/api/frenate/get_frenate_by_username/$username'));
+      final response = await http.get(Uri.parse('http://10.0.2.2:5001/api/frenate/get_frenate_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta
