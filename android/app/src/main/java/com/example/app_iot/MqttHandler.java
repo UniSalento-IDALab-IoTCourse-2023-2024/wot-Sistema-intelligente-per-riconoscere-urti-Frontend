@@ -20,7 +20,7 @@ public class MqttHandler {
 
             // Set up the connection options
             MqttConnectOptions connectOptions = new MqttConnectOptions();
-            connectOptions.setCleanSession(true);
+            connectOptions.setCleanSession(false);
 
             // Connect to the broker
             client.connect(connectOptions);
@@ -40,6 +40,7 @@ public class MqttHandler {
     public void publish(String topic, String message) {
         try {
             MqttMessage mqttMessage = new MqttMessage(message.getBytes());
+            mqttMessage.setQos(1);
             client.publish(topic, mqttMessage);
         } catch (MqttException e) {
             e.printStackTrace();

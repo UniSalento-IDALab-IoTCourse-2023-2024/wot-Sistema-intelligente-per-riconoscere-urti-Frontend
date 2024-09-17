@@ -108,8 +108,7 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
                 }
         );
 
-        // Start periodic update
-        startPeriodicUpdate();
+
     }
 
     @Override
@@ -157,20 +156,6 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
         }
     }
 
-    private void startPeriodicUpdate() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (accelerometerSink != null) {
-                    sendAccelerometerData();
-                }
-                if (gyroscopeSink != null) {
-                    sendGyroscopeData();
-                }
-                handler.postDelayed(this, UPDATE_INTERVAL);
-            }
-        }, UPDATE_INTERVAL);
-    }
 
     private void sendAccelerometerData() {
         if (accelerometerSink != null) {
