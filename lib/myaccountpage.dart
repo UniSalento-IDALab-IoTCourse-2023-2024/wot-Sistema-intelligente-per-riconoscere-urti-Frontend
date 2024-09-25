@@ -257,10 +257,14 @@ class _MyAccountPageState extends State<MyAccountPage> {
                             height: 120,
                             child: CircleAvatar(
                               radius: 40,
-                              child: Icon(
-                                Icons.perm_identity,
-                                color: Colors.white,
-                                size: 50,
+                              backgroundColor: Colors.grey[800], // Cambia colore di sfondo se necessario
+                              child: Text(
+                                "${nome?[0] ?? ''}${cognome?[0] ?? ''}", // Mostra la prima lettera del nome e del cognome
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -275,7 +279,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                                 color: Color(0XFF29E2FD),
                               ),
                               child: Icon(
-                                Icons.camera_alt,
+                                Icons.mode,
                                 color: Colors.black,
                                 size: 20,
                               ),

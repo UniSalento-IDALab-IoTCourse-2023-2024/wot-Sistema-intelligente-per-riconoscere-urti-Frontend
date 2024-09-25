@@ -101,14 +101,22 @@ class _ProfileScreenState extends State<ProfileScreen>{
                       children: [
                         Stack(
                           children: [
-                            SizedBox(width: 120, height: 120, child: CircleAvatar(
-                              radius: 40,
-                              child: Icon(
-                                Icons.perm_identity,
-                                color: Colors.white,
-                                size: 50,
+                            SizedBox(
+                              width: 120,
+                              height: 120,
+                              child: CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Colors.grey[800], // Cambia colore di sfondo se necessario
+                                child: Text(
+                                  "${nome?[0] ?? ''}${cognome?[0] ?? ''}", // Mostra la prima lettera del nome e del cognome
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 50,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),),
+                            ),
                             Positioned(
                               bottom: 0,
                               right: 0,
@@ -119,7 +127,11 @@ class _ProfileScreenState extends State<ProfileScreen>{
                                   borderRadius: BorderRadius.circular(100),
                                   color: Color(0XFF29E2FD),
                                 ),
-                                child: Icon(Icons.mode, color: Colors.black, size: 20,),
+                                child: Icon(
+                                  Icons.mode,
+                                  color: Colors.black,
+                                  size: 20,
+                                ),
                               ),
                             ),
                           ],

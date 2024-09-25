@@ -18,7 +18,7 @@ class _UserPageState extends State<UserPage> {
   late MqttServerClient _client;
   String accelerometerData = 'Aspettando i dati...';
   String gyroscopeData = 'Aspettando i dati...';
-  List<String> eventMessages = [];
+  String? latestMessage;
 
   String? username;
 
@@ -64,7 +64,7 @@ class _UserPageState extends State<UserPage> {
       final message = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       print('Message content: $message');
       setState(() {
-        eventMessages.add(message);  // Aggiungi il nuovo messaggio alla lista
+        latestMessage = message;  // Aggiungi il nuovo messaggio alla lista
       });
     });
   }
@@ -175,7 +175,7 @@ class _UserPageState extends State<UserPage> {
                   _buildDataCard('Giroscopio', gyroscopeData, screenWidth),
                 ],
               ),
-              _buildEventCard('Rilevatore di incidenti/frenate', eventMessages, screenWidth),
+              _buildEventCard('Rilevatore di incidenti/frenate', latestMessage, screenWidth),
             ],
           ),
         ),
@@ -220,7 +220,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  Widget _buildEventCard(String title, List<String> messages, double screenWidth) {
+  Widget _buildEventCard(String title, String? message, double screenWidth) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Column(
@@ -235,38 +235,24 @@ class _UserPageState extends State<UserPage> {
           ),
           SizedBox(height: 10),
           Container(
-            height: 450,
+            height: 150,
             width: screenWidth - 20,
             decoration: BoxDecoration(
               color: Colors.grey[850],
               borderRadius: BorderRadius.circular(20.0),
               boxShadow: [BoxShadow(color: Colors.black54, blurRadius: 5)],
             ),
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Container(
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.black54, // Cambia il colore di sfondo del messaggio
-                      borderRadius: BorderRadius.circular(10.0), // Aggiungi bordi arrotondati
-                      border: Border.all(
-                        color: Color(0XFF29E2FD), // Colore del bordo del messaggio
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Text(
-                      messages[index],
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white, // Cambia il colore del testo
-                      ),
-                    ),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Center(
+                child: Text(
+                  message ?? 'Aspettando i dati...',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
                   ),
-                );
-              },
+                ),
+              ),
             ),
           ),
         ],
