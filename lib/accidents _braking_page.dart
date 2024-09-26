@@ -44,7 +44,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:5001/api/incidenti/get_incidenti_by_username/$username'));
+      final response = await http.get(Uri.parse('http://192.168.103.185:5001/api/incidenti/get_incidenti_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta
@@ -88,7 +88,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://10.0.2.2:5001/api/frenate/get_frenate_by_username/$username'));
+      final response = await http.get(Uri.parse('http://192.168.103.185:5001/api/frenate/get_frenate_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta

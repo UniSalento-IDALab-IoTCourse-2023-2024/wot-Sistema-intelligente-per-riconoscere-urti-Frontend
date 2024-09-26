@@ -127,6 +127,65 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
         handler.removeCallbacksAndMessages(null);
     }
 
+
+    // Meno valori non validi ma acquisizione piu lenta e dunque non rileva alcuni eventi
+    /*@Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            boolean hasChanged = false;
+
+            if (Math.abs(lastAccelerometerValues[0] - x) > THRESHOLD) {
+                lastAccelerometerValues[0] = x;
+                hasChanged = true;
+            }
+
+            if (Math.abs(lastAccelerometerValues[1] - y) > THRESHOLD) {
+                lastAccelerometerValues[1] = y;
+                hasChanged = true;
+            }
+
+            if (Math.abs(lastAccelerometerValues[2] - z) > THRESHOLD) {
+                lastAccelerometerValues[2] = z;
+                hasChanged = true;
+            }
+
+            if (hasChanged) {
+                sendAccelerometerData();
+            }
+        } else if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            boolean hasChanged = false;
+
+            if (Math.abs(lastGyroscopeValues[0] - x) > THRESHOLD) {
+                lastGyroscopeValues[0] = x;
+                hasChanged = true;
+            }
+
+            if (Math.abs(lastGyroscopeValues[1] - y) > THRESHOLD) {
+                lastGyroscopeValues[1] = y;
+                hasChanged = true;
+            }
+
+            if (Math.abs(lastGyroscopeValues[2] - z) > THRESHOLD) {
+                lastGyroscopeValues[2] = z;
+                hasChanged = true;
+            }
+
+            // Se c'è stata una variazione significativa su almeno uno degli assi, invia i dati
+            if (hasChanged) {
+                sendGyroscopeData();
+            }
+        }
+    }*/
+
+    // Ci sono meno dati non validi ma rileva quasi tutti gli eventi
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
@@ -155,6 +214,7 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
             }
         }
     }
+
 
 
     private void sendAccelerometerData() {
