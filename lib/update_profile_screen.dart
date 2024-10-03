@@ -38,7 +38,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _updateUser() async {
-    final url = Uri.parse('http://192.168.103.185:5001/api/utenti/update/$username');
+    final url = Uri.parse('http://192.168.1.5:5001/api/utenti/update/$username');
 
     // Crea un oggetto JSON dinamico che includa solo i campi non vuoti
     Map<String, dynamic> body = {};

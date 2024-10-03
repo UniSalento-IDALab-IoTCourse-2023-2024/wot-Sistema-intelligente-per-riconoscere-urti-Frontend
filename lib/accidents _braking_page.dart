@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io'; // Importa la libreria dart:io
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -21,7 +22,6 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
   @override
   void initState() {
     super.initState();
-
     _loadToken();
   }
 
@@ -31,7 +31,6 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
 
     if (token != null) {
       final decodedToken = JwtDecoder.decode(token);
-
       setState(() {
         username = decodedToken['user'];
       });
@@ -44,7 +43,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://192.168.103.185:5001/api/incidenti/get_incidenti_by_username/$username'));
+      final response = await http.get(Uri.parse('http://192.168.1.5:5001/api/incidenti/get_incidenti_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta
@@ -52,9 +51,6 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
 
         // Decodifica la risposta JSON come lista
         final List<dynamic> data = json.decode(response.body);
-
-        // Verifica il tipo di dati
-        print('Decoded incident data: $data');
 
         // Assicurati che ogni elemento sia una mappa e estrai gli incidenti
         setState(() {
@@ -65,6 +61,13 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
               return 'Invalid item format';
             }
           }).toList();
+
+          // Ordina gli incidenti in ordine decrescente (dal più recente)
+          _incidents.sort((a, b) {
+            DateTime dateA = HttpDate.parse(a); // Usa HttpDate.parse()
+            DateTime dateB = HttpDate.parse(b);
+            return dateB.compareTo(dateA);
+          });
         });
       } else {
         setState(() {
@@ -88,7 +91,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://192.168.103.185:5001/api/frenate/get_frenate_by_username/$username'));
+      final response = await http.get(Uri.parse('http://192.168.1.5:5001/api/frenate/get_frenate_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta
@@ -96,9 +99,6 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
 
         // Decodifica la risposta JSON come lista
         final List<dynamic> data = json.decode(response.body);
-
-        // Verifica il tipo di dati
-        print('Decoded brake data: $data');
 
         // Assicurati che ogni elemento sia una mappa e estrai le frenate
         setState(() {
@@ -109,6 +109,13 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
               return 'Invalid item format';
             }
           }).toList();
+
+          // Ordina le frenate in ordine decrescente (dal più recente)
+          _brakes.sort((a, b) {
+            DateTime dateA = HttpDate.parse(a); // Usa HttpDate.parse()
+            DateTime dateB = HttpDate.parse(b);
+            return dateB.compareTo(dateA);
+          });
         });
       } else {
         setState(() {

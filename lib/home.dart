@@ -121,7 +121,7 @@ class _UserPageState extends State<UserPage> {
 
   // Funzione per inviare la richiesta DELETE all'API
   Future<void> _deleteIncident(String id) async {
-    final url = Uri.parse('http://192.168.103.185:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
+    final url = Uri.parse('http://192.168.1.5:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
 
     try {
       final response = await http.delete(url);
