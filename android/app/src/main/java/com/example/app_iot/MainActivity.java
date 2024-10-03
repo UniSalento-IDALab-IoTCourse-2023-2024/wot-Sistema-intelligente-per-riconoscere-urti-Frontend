@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodChannel;
@@ -31,7 +32,8 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
 
     private float[] lastAccelerometerValues = new float[3];
     private float[] lastGyroscopeValues = new float[3];
-    private static final float THRESHOLD = 0.05f;
+    private static final float THRESHOLD_ACC = 1f;
+    private static final float THRESHOLD_GYR = 0.005f;
 
     private EventChannel.EventSink accelerometerSink;
     private EventChannel.EventSink gyroscopeSink;
@@ -129,7 +131,7 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
 
 
     // Meno valori non validi ma acquisizione piu lenta e dunque non rileva alcuni eventi
-    /*@Override
+    @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float x = event.values[0];
@@ -138,17 +140,17 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
 
             boolean hasChanged = false;
 
-            if (Math.abs(lastAccelerometerValues[0] - x) > THRESHOLD) {
+            if (Math.abs(lastAccelerometerValues[0] - x) > THRESHOLD_ACC) {
                 lastAccelerometerValues[0] = x;
                 hasChanged = true;
             }
 
-            if (Math.abs(lastAccelerometerValues[1] - y) > THRESHOLD) {
+            if (Math.abs(lastAccelerometerValues[1] - y) > THRESHOLD_ACC) {
                 lastAccelerometerValues[1] = y;
                 hasChanged = true;
             }
 
-            if (Math.abs(lastAccelerometerValues[2] - z) > THRESHOLD) {
+            if (Math.abs(lastAccelerometerValues[2] - z) > THRESHOLD_ACC) {
                 lastAccelerometerValues[2] = z;
                 hasChanged = true;
             }
@@ -161,19 +163,30 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
             float y = event.values[1];
             float z = event.values[2];
 
+            if (z == -0.0f) {
+                z = 0.0001f;
+            }
+            else if (x == -0.0f){
+                x = 0.0001f
+            }
+            else if (y == -0.0f){
+                y = 0.0001f
+            }
+
+
             boolean hasChanged = false;
 
-            if (Math.abs(lastGyroscopeValues[0] - x) > THRESHOLD) {
+            if (Math.abs(lastGyroscopeValues[0] - x) > THRESHOLD_GYR) {
                 lastGyroscopeValues[0] = x;
                 hasChanged = true;
             }
 
-            if (Math.abs(lastGyroscopeValues[1] - y) > THRESHOLD) {
+            if (Math.abs(lastGyroscopeValues[1] - y) > THRESHOLD_GYR) {
                 lastGyroscopeValues[1] = y;
                 hasChanged = true;
             }
 
-            if (Math.abs(lastGyroscopeValues[2] - z) > THRESHOLD) {
+            if (Math.abs(lastGyroscopeValues[2] - z) > THRESHOLD_GYR) {
                 lastGyroscopeValues[2] = z;
                 hasChanged = true;
             }
@@ -183,10 +196,10 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
                 sendGyroscopeData();
             }
         }
-    }*/
+    }
 
     // Ci sono meno dati non validi ma rileva quasi tutti gli eventi
-    @Override
+   /* @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             float x = event.values[0];
@@ -213,8 +226,7 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
                 sendGyroscopeData();
             }
         }
-    }
-
+    }*/
 
 
     private void sendAccelerometerData() {
@@ -241,7 +253,7 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
 
     @Override
     protected void onDestroy() {
-        if(mqttHandler != null){
+        if (mqttHandler != null) {
             mqttHandler.disconnect();
         }
         super.onDestroy();
@@ -255,9 +267,9 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
     }
 
     private boolean hasSignificantChange(float[] lastValues, float x, float y, float z) {
-        return Math.abs(lastValues[0] - x) > THRESHOLD ||
-                Math.abs(lastValues[1] - y) > THRESHOLD ||
-                Math.abs(lastValues[2] - z) > THRESHOLD;
+        return Math.abs(lastValues[0] - x) > THRESHOLD_ACC ||
+                Math.abs(lastValues[1] - y) > THRESHOLD_ACC ||
+                Math.abs(lastValues[2] - z) > THRESHOLD_ACC;
     }
 
     private void publishMessage(String topic, String message) {
