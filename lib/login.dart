@@ -44,7 +44,7 @@ class _LoginFormState extends State<LoginForm> {
       return;
     }
 
-    final url = Uri.parse('http://192.168.1.5:5001/api/utenti/login'); // Cambia l'URL se necessario
+    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/login'); // Cambia l'URL se necessario
     final response = await http.post(
       url,
       headers: <String, String>{

@@ -167,10 +167,10 @@ public class MainActivity extends FlutterActivity implements SensorEventListener
                 z = 0.0001f;
             }
             else if (x == -0.0f){
-                x = 0.0001f
+                x = 0.0001f;
             }
             else if (y == -0.0f){
-                y = 0.0001f
+                y = 0.0001f;
             }
 
 

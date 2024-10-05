@@ -43,7 +43,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.5:5001/api/incidenti/get_incidenti_by_username/$username'));
+      final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/incidenti/get_incidenti_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta
@@ -91,7 +91,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.5:5001/api/frenate/get_frenate_by_username/$username'));
+      final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/frenate/get_frenate_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta
@@ -139,7 +139,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text(
-          'Storico Incidenti e Frenate',
+          'Storico Incidenti',
           style: TextStyle(color: Colors.grey[300]),
         ),
         centerTitle: true,
@@ -173,10 +173,10 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
                       value: 'incidents',
                       child: Text('Incidenti', style: TextStyle(color: Colors.grey[300])),
                     ),
-                    DropdownMenuItem(
+                    /*DropdownMenuItem(
                       value: 'brakes',
                       child: Text('Frenate', style: TextStyle(color: Colors.grey[300])),
-                    ),
+                    ),*/
                   ],
                   onChanged: (String? value) {
                     setState(() {

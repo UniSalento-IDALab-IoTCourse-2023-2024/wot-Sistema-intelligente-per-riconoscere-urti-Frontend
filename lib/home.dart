@@ -94,6 +94,12 @@ class _UserPageState extends State<UserPage> {
     if (word.toLowerCase() == 'no') {
       _showIncidentDialog(incidentId!);
     }
+   /* else {
+      // Se non è "no", invia l'email
+      if (username != null && incidentId != null) {
+        _sendEmail('recprojectdurantepaglialonga@gmail.com', username!);
+      }
+    }*/
   }
 
   void _showIncidentDialog(String id) {
@@ -105,7 +111,7 @@ class _UserPageState extends State<UserPage> {
       context: context,
       builder: (BuildContext context) {
         // Timer per chiudere automaticamente il dialogo dopo 5 secondi
-        Future.delayed(Duration(seconds: 5), () {
+        Future.delayed(Duration(seconds: 3), () {
           if (Navigator.canPop(context)) {
             Navigator.of(context).pop();  // Chiude il dialogo automaticamente
           }
@@ -113,7 +119,6 @@ class _UserPageState extends State<UserPage> {
 
         return AlertDialog(
           title: Text('Incidente eliminato'),
-          content: Text('Incidente con ID $id è stato eliminato.'),
         );
       },
     );
@@ -121,7 +126,7 @@ class _UserPageState extends State<UserPage> {
 
   // Funzione per inviare la richiesta DELETE all'API
   Future<void> _deleteIncident(String id) async {
-    final url = Uri.parse('http://192.168.1.5:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
+    final url = Uri.parse('http://192.168.103.187:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
 
     try {
       final response = await http.delete(url);
@@ -138,6 +143,26 @@ class _UserPageState extends State<UserPage> {
     }
   }
 
+  // Funzione per inviare l'email tramite l'API
+  /*Future<void> _sendEmail(String emailReceiver, String username) async {
+    // URL dell'API per inviare l'email, sostituisci con il tuo indirizzo IP/server
+    final url = Uri.parse('http://192.168.103.187:5001/api/send_email/$emailReceiver/$username');
+
+    try {
+      // Richiesta POST
+      final response = await http.post(url);
+
+      if (response.statusCode == 200) {
+        print('Email inviata con successo');
+      } else if (response.statusCode == 500) {
+        print('Errore durante l\'invio dell\'email: ${response.body}');
+      } else {
+        print('Errore sconosciuto: ${response.body}');
+      }
+    } catch (e) {
+      print('Errore di connessione all\'API: $e');
+    }
+  }*/
 
   void _initializeMqttClient() async {
     _client = MqttServerClient('test.mosquitto.org', 'flutter_client');
@@ -176,7 +201,7 @@ class _UserPageState extends State<UserPage> {
       print('Message content: $message');
 
       setState(() {
-        latestMessage = message;  // Assegna il nuovo messaggio a latestMessage
+        latestMessage = message;  //Assegna il nuovo messaggio a latestMessage
 
         // Controlla se il messaggio contiene la parola "incidente"
         if (latestMessage != null && latestMessage!.contains('INCIDENTE')) {
@@ -186,9 +211,19 @@ class _UserPageState extends State<UserPage> {
           final idStartIndex = latestMessage!.indexOf('ID Incidente:') + 'ID Incidente:'.length;
           incidentId = latestMessage!.substring(idStartIndex).trim();
 
+          latestMessage = 'INCIDENTE';
+
           // Avvia il riconoscimento vocale quando viene rilevato un incidente
           _speakAndListen();
+
         }
+        if (latestMessage != null && latestMessage!.contains('FRENATA')) {
+          latestMessage = 'FRENATA';
+        }
+        else if(latestMessage != null && latestMessage!.contains('ALTRO')){
+          latestMessage = 'ALTRO';
+        }
+
       });
     });
   }
@@ -299,7 +334,7 @@ class _UserPageState extends State<UserPage> {
                   _buildDataCard('Giroscopio', gyroscopeData, screenWidth),
                 ],
               ),
-              _buildEventCard('Rilevatore di incidenti/frenate', latestMessage, screenWidth),
+              _buildEventCard('Rilevatore di incidenti', latestMessage, screenWidth),
             ],
           ),
         ),
