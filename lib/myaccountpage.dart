@@ -71,7 +71,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
   }
 
   Future<void> _findUser() async {
-    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/find_by_username/$username');
+    final url = Uri.parse('http://192.168.1.11:5001/api/utenti/find_by_username/$username');
     try {
       final response = await http.get(
         url,
@@ -257,7 +257,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                             height: 120,
                             child: CircleAvatar(
                               radius: 40,
-                              backgroundColor: Colors.grey[800], // Cambia colore di sfondo se necessario
+                              backgroundColor: Color(0XFF29E2FD), // Cambia colore di sfondo se necessario
                               child: Text(
                                 "${nome?[0] ?? ''}${cognome?[0] ?? ''}", // Mostra la prima lettera del nome e del cognome
                                 style: TextStyle(
@@ -268,7 +268,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                               ),
                             ),
                           ),
-                          Positioned(
+                          /*Positioned(
                             bottom: 0,
                             right: 0,
                             child: Container(
@@ -284,7 +284,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                                 size: 20,
                               ),
                             ),
-                          ),
+                          ),*/
                         ],
                       ),
                       const SizedBox(height: 50),

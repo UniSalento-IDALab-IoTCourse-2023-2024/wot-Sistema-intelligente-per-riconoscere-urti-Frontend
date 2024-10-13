@@ -5,6 +5,7 @@ import 'package:app_iot/main.dart';
 import 'package:app_iot/signup.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'admin_page.dart';
 import 'customNavBar.dart';
 
 class LoginPage extends StatelessWidget {
@@ -34,17 +35,31 @@ class _LoginFormState extends State<LoginForm> {
     if (username.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Inserisci username e password", style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),),
+          content: Text(
+            "Inserisci username e password",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           backgroundColor: Colors.red,
         ),
       );
       return;
     }
 
-    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/login'); // Cambia l'URL se necessario
+    // Controllo se lo username e la password sono "admin"
+    if (username == 'admin' && password == 'admin') {
+      // Naviga verso la pagina specifica per l'amministratore
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => AdminPage()), // Pagina specifica per l'admin
+            (Route<dynamic> route) => false,
+      );
+      return; // Termina qui se l'utente è admin
+    }
+
+    final url = Uri.parse('http://192.168.1.11:5001/api/utenti/login'); // Cambia l'URL se necessario
     final response = await http.post(
       url,
       headers: <String, String>{
@@ -67,10 +82,13 @@ class _LoginFormState extends State<LoginForm> {
       // Mostra un messaggio di successo
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Login effettuato con successo", style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),),
+          content: Text(
+            "Login effettuato con successo",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           backgroundColor: Colors.green,
         ),
       );
@@ -84,10 +102,13 @@ class _LoginFormState extends State<LoginForm> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Errore durante il login: ${response.body}", style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),),
+          content: Text(
+            "Errore durante il login: ${response.body}",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -209,14 +230,13 @@ class _LoginFormState extends State<LoginForm> {
                           style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
-                              color: Colors.white
-                          ),
+                              color: Colors.white),
                         ),
                       ),
                     ],
                   ),
                   Container(
-                    margin: EdgeInsets.all(0),
+                    margin: const EdgeInsets.all(0),
                     height: 300,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
@@ -257,8 +277,7 @@ Widget inputFile({required TextEditingController controller, required String lab
         cursorColor: Colors.grey[300],
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(width: 2, color: Color(0XFF29E2FD))
-          ),
+              borderSide: const BorderSide(width: 2, color: Color(0XFF29E2FD))),
           contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),

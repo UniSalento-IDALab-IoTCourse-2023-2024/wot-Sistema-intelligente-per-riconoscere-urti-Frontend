@@ -45,6 +45,7 @@ dependencies:
   mqtt_client: ^9.0.0
   speech_to_text: ^7.0.0
   flutter_tts: ^3.8.3
+  fl_chart:
 
 
 dev_dependencies:
@@ -53,17 +54,17 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   http:
 
-flutter_launcher_icons:
+flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/3-icona.png"
+  image_path: "assets/images/logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -131,7 +132,7 @@ flutter_native_splash:
 
   # The image parameter allows you to specify an image used in the splash screen.  It must be a
   # png file and should be sized for 4x pixel density.
-  image: assets/images/3.png
+  image: assets/images/logo.png
 
   # The branding property allows you to specify an image used as branding in the splash screen.
   # It must be a png file. It is supported for Android, iOS and the Web.  For Android 12,
@@ -166,7 +167,7 @@ flutter_native_splash:
     # 640 pixels in diameter.
     # App icon without an icon background: This should be 1152×1152 pixels, and fit within a circle
     # 768 pixels in diameter.
-    image: assets/images/3.png
+    image: assets/images/logo.png
 
     # Splash screen background color.
     color: "#000000"
