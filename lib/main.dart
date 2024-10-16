@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget{
                   const SizedBox(
                     height: 20,
                   ),
-                  Text("Aiutaci a capire il tuo stile di guida",
+                  Text("Rileviamo, registriamo, intervieniamo",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,

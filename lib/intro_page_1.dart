@@ -27,7 +27,7 @@ class IntroPage1 extends StatelessWidget{
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 25),
                 child: Text(
-                  'AIUTACI A CAPIRE ATTRAVERSO IL TUO TELEFONO IL TUO STILE DI GUIDA',
+                  'CON IL SUPPORTO DEL TUO TELEFONO, RILEVIAMO GLI INCIDENTI',
                   style: TextStyle(
                     color: Colors.grey[300],
                     fontSize: 18,

@@ -7,7 +7,7 @@
 
 
     <application
-        android:label="app_iot"
+        android:label="C.A.R.E."
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
