@@ -27,6 +27,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _obscurePassword = true; // Stato per la visibilità della password
 
   Future<void> _login() async {
     final username = _usernameController.text;
@@ -50,16 +51,15 @@ class _LoginFormState extends State<LoginForm> {
 
     // Controllo se lo username e la password sono "admin"
     if (username == 'admin' && password == 'admin') {
-      // Naviga verso la pagina specifica per l'amministratore
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => AdminPage()), // Pagina specifica per l'admin
+        MaterialPageRoute(builder: (context) => AdminPage()),
             (Route<dynamic> route) => false,
       );
       return; // Termina qui se l'utente è admin
     }
 
-    final url = Uri.parse('http://192.168.7.89:5001/api/utenti/login'); // Cambia l'URL se necessario
+    final url = Uri.parse('http://192.168.7.89:5001/api/utenti/login');
     final response = await http.post(
       url,
       headers: <String, String>{
@@ -75,11 +75,9 @@ class _LoginFormState extends State<LoginForm> {
       final responseData = jsonDecode(response.body);
       final token = responseData['token'];
 
-      // Salva il token in SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('auth_token', token);
 
-      // Mostra un messaggio di successo
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -93,7 +91,6 @@ class _LoginFormState extends State<LoginForm> {
         ),
       );
 
-      // Naviga alla pagina principale
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => CustomNavBar()),
@@ -103,7 +100,7 @@ class _LoginFormState extends State<LoginForm> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            "Errore durante il login: ${response.body}",
+            "Assicurati che le credenziali siano corrette",
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
@@ -172,7 +169,16 @@ class _LoginFormState extends State<LoginForm> {
                     child: Column(
                       children: <Widget>[
                         inputFile(controller: _usernameController, label: "Username"),
-                        inputFile(controller: _passwordController, label: "Password", obscureText: true),
+                        inputFile(
+                          controller: _passwordController,
+                          label: "Password",
+                          obscureText: _obscurePassword,
+                          toggleObscureText: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
                       ],
                     ),
                   ),
@@ -255,7 +261,7 @@ class _LoginFormState extends State<LoginForm> {
   }
 }
 
-Widget inputFile({required TextEditingController controller, required String label, bool obscureText = false}) {
+Widget inputFile({required TextEditingController controller, required String label, bool obscureText = false, VoidCallback? toggleObscureText}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -285,9 +291,19 @@ Widget inputFile({required TextEditingController controller, required String lab
           border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),
+          suffixIcon: toggleObscureText != null // Aggiungi icona per mostrare/nascondere password
+              ? IconButton(
+            icon: Icon(
+              obscureText ? Icons.visibility_off : Icons.visibility,
+              color: Colors.grey[300],
+            ),
+            onPressed: toggleObscureText,
+          )
+              : null,
         ),
       ),
       const SizedBox(height: 10),
     ],
   );
 }
+
