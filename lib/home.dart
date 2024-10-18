@@ -126,7 +126,7 @@ class _UserPageState extends State<UserPage> {
 
   // Funzione per inviare la richiesta DELETE all'API
   Future<void> _deleteIncident(String id) async {
-    final url = Uri.parse('http://192.168.7.89:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
+    final url = Uri.parse('http://192.168.1.13:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
 
     try {
       final response = await http.delete(url);
@@ -316,7 +316,7 @@ class _UserPageState extends State<UserPage> {
       appBar: AppBar(
         title: Text(
           "Home",
-          style: TextStyle(color: Colors.grey[300]),
+          style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,

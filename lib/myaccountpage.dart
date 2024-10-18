@@ -71,7 +71,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
   }
 
   Future<void> _findUser() async {
-    final url = Uri.parse('http://192.168.7.89:5001/api/utenti/find_by_username/$username');
+    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/find_by_username/$username');
     try {
       final response = await http.get(
         url,
@@ -106,7 +106,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
   }
 
   Future<void> _deleteAccount() async {
-    final url = Uri.parse('http://192.168.7.89:5001/api/utenti/delete/$username'); // Cambia l'URL se necessario
+    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/delete/$username'); // Cambia l'URL se necessario
     try {
       final response = await http.delete(
         url,
@@ -226,7 +226,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
       appBar: AppBar(
         title: Text(
           "Account",
-          style: TextStyle(color: Colors.grey[300]),
+          style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         leading: IconButton(

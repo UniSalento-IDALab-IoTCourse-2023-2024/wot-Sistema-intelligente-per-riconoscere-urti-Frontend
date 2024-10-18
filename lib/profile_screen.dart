@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen>{
   }
 
   Future<void> _findUser() async {
-    final url = Uri.parse('http://192.168.7.89:5001/api/utenti/find_by_username/$username'); // Cambia l'URL se necessario
+    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/find_by_username/$username'); // Cambia l'URL se necessario
     try {
       final response = await http.get(
         url,
@@ -96,7 +96,8 @@ class _ProfileScreenState extends State<ProfileScreen>{
         backgroundColor: Colors.black,
         appBar: AppBar(
           title: Text("Impostazioni", style: TextStyle(
-            color: Colors.grey[300],
+              color: Colors.grey[300],
+              fontWeight: FontWeight.bold
           ),),
           centerTitle: true,
           backgroundColor: Colors.transparent,

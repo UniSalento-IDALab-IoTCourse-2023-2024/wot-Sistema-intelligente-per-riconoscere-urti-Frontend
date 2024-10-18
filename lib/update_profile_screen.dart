@@ -38,7 +38,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _updateUser() async {
-    final url = Uri.parse('http://192.168.7.89:5001/api/utenti/update/$username');
+    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/update/$username');
 
     // Crea un oggetto JSON dinamico che includa solo i campi non vuoti
     Map<String, dynamic> body = {};
@@ -93,7 +93,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       appBar: AppBar(
         title: Text(
           "Modifica Account",
-          style: TextStyle(color: Colors.grey[300]),
+          style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         leading: IconButton(

@@ -47,7 +47,7 @@ class SignUpPage extends StatelessWidget {
     }
 
     // Costruisci la richiesta HTTP
-    final url = Uri.parse('http://192.168.7.89:5001/api/utenti/registrazione');
+    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/registrazione');
     final response = await http.post(
       url,
       headers: <String, String>{

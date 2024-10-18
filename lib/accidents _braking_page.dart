@@ -11,12 +11,10 @@ class AccidentBrakingPage extends StatefulWidget {
 }
 
 class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
-  String? _selectedOption;
   List<String> _incidents = [];
-  List<String> _brakes = [];
   bool _isLoading = false;
   String? _errorMessage;
-
+  bool _isListVisible = false; // Flag per mostrare o nascondere la lista
   String? username;
 
   @override
@@ -38,12 +36,22 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
   }
 
   Future<void> _loadIncidents() async {
+    if (_isListVisible) {
+      // Se la lista è visibile, la nascondiamo
+      setState(() {
+        _isListVisible = false;
+        _incidents = []; // Svuota la lista degli incidenti
+        _errorMessage = null;
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://192.168.7.89:5001/api/incidenti/get_incidenti_by_username/$username'));
+      final response = await http.get(Uri.parse('http://192.168.1.13:5001/api/incidenti/get_incidenti_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta
@@ -68,6 +76,8 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
             DateTime dateB = HttpDate.parse(b);
             return dateB.compareTo(dateA);
           });
+
+          _isListVisible = true; // Mostra la lista
         });
       } else {
         setState(() {
@@ -85,54 +95,6 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
     }
   }
 
-  Future<void> _loadBrakes() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-    try {
-      final response = await http.get(Uri.parse('http://192.168.7.89:5001/api/frenate/get_frenate_by_username/$username'));
-
-      if (response.statusCode == 200) {
-        // Verifica il corpo della risposta
-        print('Brakes Response body: ${response.body}');
-
-        // Decodifica la risposta JSON come lista
-        final List<dynamic> data = json.decode(response.body);
-
-        // Assicurati che ogni elemento sia una mappa e estrai le frenate
-        setState(() {
-          _brakes = data.map((item) {
-            if (item is Map<String, dynamic>) {
-              return item['date'] as String? ?? 'No brake information';
-            } else {
-              return 'Invalid item format';
-            }
-          }).toList();
-
-          // Ordina le frenate in ordine decrescente (dal più recente)
-          _brakes.sort((a, b) {
-            DateTime dateA = HttpDate.parse(a); // Usa HttpDate.parse()
-            DateTime dateB = HttpDate.parse(b);
-            return dateB.compareTo(dateA);
-          });
-        });
-      } else {
-        setState(() {
-          _errorMessage = 'Failed to load brakes';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Error fetching brakes: $e';
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,7 +102,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       appBar: AppBar(
         title: Text(
           'Storico Incidenti',
-          style: TextStyle(color: Colors.grey[300]),
+          style: TextStyle(color: Colors.grey[300], fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -149,100 +111,63 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[850],
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                child: DropdownButton<String>(
-                  value: _selectedOption,
-                  hint: Text(
-                    'Seleziona un\'opzione',
-                    style: TextStyle(color: Colors.grey[300]),
+            Center( // Centra il pulsante orizzontalmente
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                child: ElevatedButton(
+                  onPressed: _loadIncidents,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(_isListVisible ? 'Nascondi Incidenti' : 'Visualizza Incidenti', style: TextStyle(color: Colors.white, fontSize: 17),),
+                      SizedBox(width: 7,),
+                      Icon(_isListVisible ? Icons.arrow_upward_outlined : Icons.arrow_downward_outlined, color: Colors.white,)
+                    ],
                   ),
-                  dropdownColor: Colors.grey[850],
-                  icon: Icon(Icons.arrow_downward, color: Colors.grey[300]),
-                  isExpanded: true,
-                  underline: SizedBox(),
-                  items: [
-                    DropdownMenuItem(
-                      value: 'incidents',
-                      child: Text('Incidenti', style: TextStyle(color: Colors.grey[300])),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 40),
+                    backgroundColor: Color(0XFF29E2FD).withOpacity(0.9),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    /*DropdownMenuItem(
-                      value: 'brakes',
-                      child: Text('Frenate', style: TextStyle(color: Colors.grey[300])),
-                    ),*/
-                  ],
-                  onChanged: (String? value) {
-                    setState(() {
-                      _selectedOption = value;
-                      if (value == 'incidents') {
-                        _loadIncidents();
-                      } else if (value == 'brakes') {
-                        _loadBrakes();
-                      }
-                    });
-                  },
+                    side: BorderSide(
+                      color: Colors.white,
+                      width: 2
+                    )
+                  ),
                 ),
               ),
             ),
-            if (_selectedOption != null)
-              Container(
-                margin: EdgeInsets.all(8.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[850],
-                  borderRadius: BorderRadius.circular(10.0),
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                child: _selectedOption == 'incidents'
-                    ? _isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : _errorMessage != null
-                    ? Center(child: Text(_errorMessage!, style: TextStyle(color: Colors.red)))
-                    : ListView(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: _incidents.map((incident) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.white, width: 1)),
-                      ),
-                      child: ListTile(
-                        title: Text(
-                          incident,
-                          style: TextStyle(color: Colors.grey[300]),
+            if (_isLoading)
+              Center(child: CircularProgressIndicator())
+            else if (_errorMessage != null)
+              Center(child: Text(_errorMessage!, style: TextStyle(color: Colors.red)))
+            else if (_isListVisible && _incidents.isNotEmpty)
+                Container(
+                  margin: EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[850],
+                    borderRadius: BorderRadius.circular(10.0),
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: _incidents.map((incident) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          border: Border(bottom: BorderSide(color: Colors.white, width: 1)),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                )
-                    : _isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : _errorMessage != null
-                    ? Center(child: Text(_errorMessage!, style: TextStyle(color: Colors.red)))
-                    : ListView(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: _brakes.map((brake) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.white, width: 1)),
-                      ),
-                      child: ListTile(
-                        title: Text(
-                          brake,
-                          style: TextStyle(color: Colors.grey[300]),
+                        child: ListTile(
+                          title: Text(
+                            incident,
+                            style: TextStyle(color: Colors.grey[300]),
+                          ),
                         ),
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
           ],
         ),
       ),
