@@ -94,10 +94,10 @@ class _UserPageState extends State<UserPage> {
     if (word.toLowerCase() == 'no') {
       _showIncidentDialog(incidentId!);
     }
-   /* else {
-      // Se non è "no", invia l'email
-      if (username != null && incidentId != null) {
-        _sendEmail('recprojectdurantepaglialonga@gmail.com', username!);
+   /*else {
+      if (username != null) {
+        // _sendEmail('recprojectdurantepaglialonga@gmail.com', username!);
+        _sendEmail('francesco.schirinzi1@studenti.unisalento.it', username!);
       }
     }*/
   }
@@ -126,7 +126,7 @@ class _UserPageState extends State<UserPage> {
 
   // Funzione per inviare la richiesta DELETE all'API
   Future<void> _deleteIncident(String id) async {
-    final url = Uri.parse('http://192.168.1.13:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
+    final url = Uri.parse('http://192.168.103.187:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
 
     try {
       final response = await http.delete(url);
@@ -144,7 +144,7 @@ class _UserPageState extends State<UserPage> {
   }
 
   // Funzione per inviare l'email tramite l'API
-  /*Future<void> _sendEmail(String emailReceiver, String username) async {
+  Future<void> _sendEmail(String emailReceiver, String username) async {
     // URL dell'API per inviare l'email, sostituisci con il tuo indirizzo IP/server
     final url = Uri.parse('http://192.168.103.187:5001/api/send_email/$emailReceiver/$username');
 
@@ -162,7 +162,7 @@ class _UserPageState extends State<UserPage> {
     } catch (e) {
       print('Errore di connessione all\'API: $e');
     }
-  }*/
+  }
 
   void _initializeMqttClient() async {
     _client = MqttServerClient('test.mosquitto.org', 'flutter_client');

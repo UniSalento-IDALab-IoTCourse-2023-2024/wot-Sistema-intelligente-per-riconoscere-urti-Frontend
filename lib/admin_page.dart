@@ -30,7 +30,7 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   Future<void> fetchUserCount() async {
-    final response = await http.get(Uri.parse('http://192.168.7.89:5001/api/utenti/'));
+    final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/utenti/'));
     if (response.statusCode == 200) {
       List<dynamic> users = json.decode(response.body);
       setState(() {
@@ -42,7 +42,7 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   Future<void> fetchUsers() async {
-    final response = await http.get(Uri.parse('http://192.168.7.89:5001/api/utenti/'));
+    final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/utenti/'));
     if (response.statusCode == 200) {
       List<dynamic> users = json.decode(response.body);
       setState(() {
@@ -64,8 +64,8 @@ class _AdminPageState extends State<AdminPage> {
 
     try {
       String apiUrl = username == null || username == 'Tutti'
-          ? 'http://192.168.7.89:5001/api/incidenti/'
-          : 'http://192.168.7.89:5001/api/incidenti/get_incidenti_by_username/$username';
+          ? 'http://192.168.103.187:5001/api/incidenti/'
+          : 'http://192.168.103.187:5001/api/incidenti/get_incidenti_by_username/$username';
 
       final response = await http.get(Uri.parse(apiUrl));
 
@@ -108,12 +108,16 @@ class _AdminPageState extends State<AdminPage> {
       return Center(child: Text('Nessun dato disponibile', style: TextStyle(color: Colors.white)));
     }
 
-    List<double> yValues = _incidents.map((incident) {
-      return HttpDate.parse(incident['date']!).millisecondsSinceEpoch.toDouble();
-    }).toList();
+    // Raggruppa gli incidenti per giorno e conta quanti ce ne sono per ogni giorno
+    Map<String, int> incidentsPerDay = {};
+    for (var incident in _incidents) {
+      final date = HttpDate.parse(incident['date']!);
+      final dayKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+      incidentsPerDay[dayKey] = (incidentsPerDay[dayKey] ?? 0) + 1;
+    }
 
-    double minY = yValues.reduce((a, b) => a < b ? a : b);
-    double maxY = yValues.reduce((a, b) => a > b ? a : b);
+    // Ordina le date
+    var sortedDays = incidentsPerDay.keys.toList()..sort();
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -122,17 +126,32 @@ class _AdminPageState extends State<AdminPage> {
           gridData: FlGridData(show: true),
           titlesData: FlTitlesData(
             bottomTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 40,
+                getTitlesWidget: (value, meta) {
+                  if (value.toInt() >= 0 && value.toInt() < sortedDays.length) {
+                    final dateParts = sortedDays[value.toInt()].split('-');
+                    return Transform.rotate(
+                      angle: -45 * 3.14159 / 180, // Converti gradi in radianti
+                      child: Text(
+                        '${dateParts[2]}/${dateParts[1]}',
+                        style: TextStyle(color: Colors.white, fontSize: 10),
+                      ),
+                    );
+                  }
+                  return Text('');
+                },
+              ),
             ),
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 60,
+                reservedSize: 40,
                 getTitlesWidget: (value, meta) {
-                  final date = DateTime.fromMillisecondsSinceEpoch(value.toInt());
                   return Text(
-                    '${date.day}/${date.month} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
-                    style: TextStyle(color: Colors.white, fontSize: 8),
+                    value.toInt().toString(),
+                    style: TextStyle(color: Colors.white, fontSize: 12),
                   );
                 },
               ),
@@ -146,9 +165,11 @@ class _AdminPageState extends State<AdminPage> {
           ),
           lineBarsData: [
             LineChartBarData(
-              spots: _incidents.asMap().entries.map((entry) {
-                final incidentDate = HttpDate.parse(entry.value['date']!).millisecondsSinceEpoch.toDouble();
-                return FlSpot(entry.key.toDouble(), incidentDate);
+              spots: sortedDays.asMap().entries.map((entry) {
+                return FlSpot(
+                  entry.key.toDouble(),
+                  incidentsPerDay[entry.value]!.toDouble(),
+                );
               }).toList(),
               isCurved: true,
               color: Color(0XFF29E2FD),
@@ -157,9 +178,9 @@ class _AdminPageState extends State<AdminPage> {
             ),
           ],
           minX: 0,
-          maxX: (_incidents.length - 1).toDouble(),
-          minY: minY,
-          maxY: maxY,
+          maxX: (sortedDays.length - 1).toDouble(),
+          minY: 0,
+          maxY: incidentsPerDay.values.reduce((a, b) => a > b ? a : b).toDouble() + 1,
         ),
       ),
     );
