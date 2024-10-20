@@ -106,7 +106,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
   }
 
   Future<void> _deleteAccount() async {
-    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/delete/$username'); // Cambia l'URL se necessario
+    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/delete/$username');
     try {
       final response = await http.delete(
         url,
@@ -123,7 +123,13 @@ class _MyAccountPageState extends State<MyAccountPage> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context);  // Torna alla schermata precedente o home dopo l'eliminazione
+
+        // Poi naviga alla HomePage
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+              (route) => false, // Elimina tutte le rotte precedenti
+        );
       } else {
         // Mostra un messaggio di errore tramite Snackbar
         ScaffoldMessenger.of(context).showSnackBar(
@@ -143,6 +149,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
       );
     }
   }
+
 
   void _showDeleteAccountDialog(BuildContext context) {
     showDialog(
@@ -193,7 +200,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (e) => HomePage())); // Chiude il dialogo
                 _deleteAccount();  // Esegui la cancellazione
               },
             ),

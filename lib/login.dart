@@ -168,10 +168,11 @@ class _LoginFormState extends State<LoginForm> {
                     padding: const EdgeInsets.symmetric(horizontal: 40),
                     child: Column(
                       children: <Widget>[
-                        inputFile(controller: _usernameController, label: "Username"),
+                        inputFile(controller: _usernameController, label: "Username", icon: Icons.person),
                         inputFile(
                           controller: _passwordController,
                           label: "Password",
+                          icon: Icons.lock,
                           obscureText: _obscurePassword,
                           toggleObscureText: () {
                             setState(() {
@@ -261,7 +262,7 @@ class _LoginFormState extends State<LoginForm> {
   }
 }
 
-Widget inputFile({required TextEditingController controller, required String label, bool obscureText = false, VoidCallback? toggleObscureText}) {
+Widget inputFile({required TextEditingController controller, required String label, required IconData icon, bool obscureText = false, VoidCallback? toggleObscureText}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -285,6 +286,7 @@ Widget inputFile({required TextEditingController controller, required String lab
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(width: 2, color: Color(0XFF29E2FD))),
           contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          prefixIcon: Icon(icon, color: Colors.grey[300]), // Icona a sinistra
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),

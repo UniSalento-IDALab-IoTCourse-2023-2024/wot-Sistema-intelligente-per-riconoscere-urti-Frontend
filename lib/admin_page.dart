@@ -30,7 +30,7 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   Future<void> fetchUserCount() async {
-    final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/utenti/'));
+    final response = await http.get(Uri.parse('http://192.168.1.13:5001/api/utenti/'));
     if (response.statusCode == 200) {
       List<dynamic> users = json.decode(response.body);
       setState(() {
@@ -42,7 +42,7 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   Future<void> fetchUsers() async {
-    final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/utenti/'));
+    final response = await http.get(Uri.parse('http://192.168.1.13:5001/api/utenti/'));
     if (response.statusCode == 200) {
       List<dynamic> users = json.decode(response.body);
       setState(() {
@@ -64,8 +64,8 @@ class _AdminPageState extends State<AdminPage> {
 
     try {
       String apiUrl = username == null || username == 'Tutti'
-          ? 'http://192.168.103.187:5001/api/incidenti/'
-          : 'http://192.168.103.187:5001/api/incidenti/get_incidenti_by_username/$username';
+          ? 'http://192.168.1.13:5001/api/incidenti/'
+          : 'http://192.168.1.13:5001/api/incidenti/get_incidenti_by_username/$username';
 
       final response = await http.get(Uri.parse(apiUrl));
 
@@ -307,23 +307,35 @@ class _AdminPageState extends State<AdminPage> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _showList = !_showList;
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Color(0XFF29E2FD), // Colore del testo
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20), // Arrotondamento degli angoli
-                  side: BorderSide(color: Colors.white, width: 2), // Bordo del pulsante
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _showList = !_showList;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 40),
+                    backgroundColor: Color(0XFF29E2FD).withOpacity(0.9),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    side: BorderSide(
+                        color: Colors.white,
+                        width: 2
+                    )
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10), // Padding interno
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(_showList ? 'Nascondi Lista' : 'Visualizza Lista', style: TextStyle(color: Colors.white, fontSize: 17),),
+                    SizedBox(width: 7,),
+                    Icon(_showList ? Icons.arrow_upward_outlined : Icons.arrow_downward_outlined, color: Colors.white,)
+                  ],
+                ),
               ),
-              child: Text(_showList ? 'Nascondi Lista' : 'Mostra Lista',),
             ),
             SizedBox(height: 20),
             if (_showList)

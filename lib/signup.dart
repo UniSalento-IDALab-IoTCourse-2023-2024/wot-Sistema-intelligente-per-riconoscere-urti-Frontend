@@ -6,9 +6,14 @@ import 'dart:convert';
 import 'login.dart';
 import 'main.dart';
 
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   SignUpPage({super.key});
 
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
   // Controller per i campi di input
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController cognomeController = TextEditingController();
@@ -18,9 +23,11 @@ class SignUpPage extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confermaPasswordController = TextEditingController();
 
+  bool _passwordVisible = false;  // Per controllare la visibilità della password
+  bool _confermaPasswordVisible = false;  // Per controllare la visibilità della conferma password
+
   // Funzione per registrare l'utente
   void _registerUser(BuildContext context) async {
-    // Ottieni i dati dai controller
     final nome = nomeController.text;
     final cognome = cognomeController.text;
     final username = usernameController.text;
@@ -30,7 +37,6 @@ class SignUpPage extends StatelessWidget {
     final confermaPassword = confermaPasswordController.text;
 
     if (password != confermaPassword) {
-      // Mostra un errore se le password non corrispondono
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -46,7 +52,6 @@ class SignUpPage extends StatelessWidget {
       return;
     }
 
-    // Costruisci la richiesta HTTP
     final url = Uri.parse('http://192.168.1.13:5001/api/utenti/registrazione');
     final response = await http.post(
       url,
@@ -64,7 +69,6 @@ class SignUpPage extends StatelessWidget {
     );
 
     if (response.statusCode == 200) {
-      // Mostra un messaggio di successo e naviga alla pagina di login
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -82,11 +86,10 @@ class SignUpPage extends StatelessWidget {
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } else {
-      // Mostra un messaggio di errore
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            "Errore nella registrazione: ${response.body}",
+            "Errore nella registrazione: Assicurati che tutti i campi siano compilati correttamente",
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
@@ -101,7 +104,7 @@ class SignUpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: true, // Permette alla pagina di adattarsi quando la tastiera appare
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -120,7 +123,7 @@ class SignUpPage extends StatelessWidget {
           ),
         ),
       ),
-      body: SingleChildScrollView( // Avvolge il contenuto in uno scroll view
+      body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           width: double.infinity,
@@ -149,13 +152,57 @@ class SignUpPage extends StatelessWidget {
               ),
               Column(
                 children: <Widget>[
-                  inputFile(label: "Nome", controller: nomeController),
-                  inputFile(label: "Cognome", controller: cognomeController),
-                  inputFile(label: "Username", controller: usernameController),
-                  inputFile(label: "Numero di Telefono", controller: telefonoController),
-                  inputFile(label: "Email", controller: emailController),
-                  inputFile(label: "Password", obscureText: true, controller: passwordController),
-                  inputFile(label: "Conferma Password", obscureText: true, controller: confermaPasswordController),
+                  inputFile(
+                    label: "Nome",
+                    controller: nomeController,
+                    icon: Icons.person,
+                  ),
+                  inputFile(
+                    label: "Cognome",
+                    controller: cognomeController,
+                    icon: Icons.person,
+                  ),
+                  inputFile(
+                    label: "Username",
+                    controller: usernameController,
+                    icon: Icons.person,
+                  ),
+                  inputFile(
+                    label: "Numero di Telefono",
+                    controller: telefonoController,
+                    icon: Icons.phone,
+                  ),
+                  inputFile(
+                    label: "Email",
+                    controller: emailController,
+                    icon: Icons.email,
+                  ),
+                  inputFile(
+                    label: "Password",
+                    controller: passwordController,
+                    icon: Icons.lock,
+                    obscureText: !_passwordVisible,
+                    isPassword: true,
+                    togglePasswordVisibility: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                    passwordVisible: _passwordVisible,
+                  ),
+                  inputFile(
+                    label: "Conferma Password",
+                    controller: confermaPasswordController,
+                    icon: Icons.lock,
+                    obscureText: !_confermaPasswordVisible,
+                    isPassword: true,
+                    togglePasswordVisibility: () {
+                      setState(() {
+                        _confermaPasswordVisible = !_confermaPasswordVisible;
+                      });
+                    },
+                    passwordVisible: _confermaPasswordVisible,
+                  ),
                 ],
               ),
               Container(
@@ -226,7 +273,15 @@ class SignUpPage extends StatelessWidget {
 }
 
 // Widget per i campi di input
-Widget inputFile({required String label, bool obscureText = false, required TextEditingController controller}) {
+Widget inputFile({
+  required String label,
+  required TextEditingController controller,
+  required IconData icon,
+  bool obscureText = false,
+  bool isPassword = false,
+  bool passwordVisible = false,
+  void Function()? togglePasswordVisibility,
+}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -246,17 +301,23 @@ Widget inputFile({required String label, bool obscureText = false, required Text
           color: Colors.grey[300],
         ),
         cursorColor: Colors.grey[300],
-
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-          enabledBorder: OutlineInputBorder(
+          contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+          prefixIcon: Icon(icon, color: Colors.grey[300]), // Icona a sinistra
+          suffixIcon: isPassword
+              ? IconButton(
+            icon: Icon(
+              passwordVisible ? Icons.visibility : Icons.visibility_off,
+              color: Colors.grey[300],
+            ),
+            onPressed: togglePasswordVisibility,
+          )
+              : null, // Icona per la visibilità della password
+          enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),
-          border: OutlineInputBorder(
+          border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
-          ),
-          focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(width: 2, color: Color(0XFF29E2FD))
           ),
         ),
       ),
