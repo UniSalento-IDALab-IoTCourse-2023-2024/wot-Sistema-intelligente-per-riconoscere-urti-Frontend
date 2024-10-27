@@ -12,7 +12,7 @@ class IntroPage2 extends StatelessWidget{
         ),
         body: Column(
           children: [
-            Spacer(flex:1), // Aggiungi uno Spacer per spingere l'immagine verso l'alto
+            Spacer(flex:1),
             Container(
               height: MediaQuery.of(context).size.height / 3,
               decoration: const BoxDecoration(
@@ -22,7 +22,7 @@ class IntroPage2 extends StatelessWidget{
                 ),
               ),
             ),
-            const SizedBox(height: 20),  // Spazio tra l'immagine e il testo
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 25),
               child: Text(
@@ -35,7 +35,7 @@ class IntroPage2 extends StatelessWidget{
                 textAlign: TextAlign.center,
               ),
             ),
-            Spacer(flex:2), // Aggiungi uno Spacer per spingere il testo più in basso
+            Spacer(flex:2),
           ],
         )
     );

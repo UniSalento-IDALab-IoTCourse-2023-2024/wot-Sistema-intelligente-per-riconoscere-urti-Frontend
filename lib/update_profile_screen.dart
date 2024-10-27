@@ -38,7 +38,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _updateUser() async {
-    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/update/$username');
+    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/update/$username');
 
     // Crea un oggetto JSON dinamico che includa solo i campi non vuoti
     Map<String, dynamic> body = {};
@@ -73,13 +73,11 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     );
 
     if (response.statusCode == 200) {
-      // Gestisci il successo dell'aggiornamento
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Utente aggiornato con successo')),
       );
       Navigator.push(context, MaterialPageRoute(builder: (e) => CustomNavBar()));
     } else {
-      // Gestisci gli errori
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Errore durante l\'aggiornamento')),
       );

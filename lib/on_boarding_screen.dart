@@ -53,7 +53,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>{
                   SmoothPageIndicator(
                     controller: _controller,
                     count: 3,
-                    effect: WormEffect( // Qui puoi specificare l'effetto desiderato, come WormEffect
+                    effect: WormEffect(
                       dotColor: Colors.grey, // Colore dei pallini non attivi
                       activeDotColor: Color(0XFF29E2FD), // Colore del pallino attivo
                   ),),

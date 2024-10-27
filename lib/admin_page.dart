@@ -30,7 +30,7 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   Future<void> fetchUserCount() async {
-    final response = await http.get(Uri.parse('http://192.168.1.13:5001/api/utenti/'));
+    final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/utenti/'));
     if (response.statusCode == 200) {
       List<dynamic> users = json.decode(response.body);
       setState(() {
@@ -42,11 +42,10 @@ class _AdminPageState extends State<AdminPage> {
   }
 
   Future<void> fetchUsers() async {
-    final response = await http.get(Uri.parse('http://192.168.1.13:5001/api/utenti/'));
+    final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/utenti/'));
     if (response.statusCode == 200) {
       List<dynamic> users = json.decode(response.body);
       setState(() {
-        // Aggiungi "Tutti" alla lista degli utenti
         _users = ['Tutti'] + users.map<String>((user) => user['username'].toString()).toList();
       });
     } else {
@@ -64,8 +63,8 @@ class _AdminPageState extends State<AdminPage> {
 
     try {
       String apiUrl = username == null || username == 'Tutti'
-          ? 'http://192.168.1.13:5001/api/incidenti/'
-          : 'http://192.168.1.13:5001/api/incidenti/get_incidenti_by_username/$username';
+          ? 'http://192.168.103.187:5001/api/incidenti/'
+          : 'http://192.168.103.187:5001/api/incidenti/get_incidenti_by_username/$username';
 
       final response = await http.get(Uri.parse(apiUrl));
 

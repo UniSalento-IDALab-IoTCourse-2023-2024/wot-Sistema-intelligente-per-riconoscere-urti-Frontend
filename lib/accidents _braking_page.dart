@@ -51,7 +51,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _errorMessage = null;
     });
     try {
-      final response = await http.get(Uri.parse('http://192.168.1.13:5001/api/incidenti/get_incidenti_by_username/$username'));
+      final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/incidenti/get_incidenti_by_username/$username'));
 
       if (response.statusCode == 200) {
         // Verifica il corpo della risposta
@@ -111,7 +111,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Center( // Centra il pulsante orizzontalmente
+            Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
                 child: ElevatedButton(

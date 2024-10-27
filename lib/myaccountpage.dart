@@ -71,7 +71,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
   }
 
   Future<void> _findUser() async {
-    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/find_by_username/$username');
+    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/find_by_username/$username');
     try {
       final response = await http.get(
         url,
@@ -106,7 +106,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
   }
 
   Future<void> _deleteAccount() async {
-    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/delete/$username');
+    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/delete/$username');
     try {
       final response = await http.delete(
         url,
@@ -116,7 +116,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
       );
 
       if (response.statusCode == 200) {
-        // Mostra un messaggio di successo tramite Snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Account eliminato con successo'),
@@ -124,14 +123,12 @@ class _MyAccountPageState extends State<MyAccountPage> {
           ),
         );
 
-        // Poi naviga alla HomePage
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
               (route) => false, // Elimina tutte le rotte precedenti
         );
       } else {
-        // Mostra un messaggio di errore tramite Snackbar
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Errore nell\'eliminazione dell\'account: ${response.statusCode}'),
@@ -140,7 +137,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
         );
       }
     } catch (error) {
-      // Mostra un messaggio di errore tramite Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Errore nella richiesta: $error'),
@@ -164,7 +160,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
             children: [
               Icon(Icons.warning, color: Colors.redAccent),
               SizedBox(width: 5),
-              Expanded( // Usa Expanded per assicurarti che il titolo sia dinamico
+              Expanded(
                 child: Text(
                   'Conferma Eliminazione',
                   style: TextStyle(
@@ -175,9 +171,9 @@ class _MyAccountPageState extends State<MyAccountPage> {
               ),
             ],
           ),
-          content: SingleChildScrollView( // Aggiungi uno scroll per gestire lo spazio disponibile
+          content: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Riduci lo spazio occupato dal contenuto
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -200,7 +196,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                _deleteAccount();  // Esegui la cancellazione
+                _deleteAccount();
               },
             ),
             TextButton(
@@ -215,7 +211,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Navigator.of(context).pop(); // Chiude il dialogo
+                Navigator.of(context).pop();
               },
             ),
           ],

@@ -9,14 +9,14 @@ class BottomNavBtn extends StatelessWidget {
     required this.currentIndex,
     required this.onPressed,
     required this.color,
-    required this.totalIcons, // Add a parameter for the total number of icons
+    required this.totalIcons,
   });
 
   final IconData icon;
   final Color color;
   final int index;
   final int currentIndex;
-  final int totalIcons; // Total number of icons
+  final int totalIcons;
   final Function(int) onPressed;
 
   @override

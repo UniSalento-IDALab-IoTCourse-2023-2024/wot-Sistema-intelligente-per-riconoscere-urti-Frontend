@@ -48,9 +48,10 @@ class _UserPageState extends State<UserPage> {
 
   // Funzione per chiedere tramite messaggio vocale se è avvenuto un incidente
   Future<void> _speakAndListen() async {
-    await _flutterTts.speak("Hai fatto un incidente??");  // Riproduci il messaggio vocale
+    await _flutterTts.speak("Hai fatto un incidente??");
 
-    _flutterTts.setCompletionHandler(() {  // Quando il messaggio termina, avvia il riconoscimento vocale
+    // Quando il messaggio termia avvia il riconoscimento vocale
+    _flutterTts.setCompletionHandler(() {
       _startListening();
     });
   }
@@ -74,12 +75,12 @@ class _UserPageState extends State<UserPage> {
           _handleRecognizedWord(recognizedWord);  // Invia i risultati alla funzione _handleRecognizedWord
         },
         listenFor: Duration(seconds: 5),  // Ascolta per 5 secondi
-        pauseFor: Duration(seconds: 5),   // Se vuoi mettere in pausa per altri 5 secondi dopo l'ascolto
+        pauseFor: Duration(seconds: 5),
       );
 
       // Chiudi automaticamente l'ascolto dopo 5 secondi
       Future.delayed(Duration(seconds: 5), () {
-        _speech.stop();  // Ferma l'ascolto
+        _speech.stop();
         setState(() {
           _isListening = false;
         });
@@ -103,17 +104,15 @@ class _UserPageState extends State<UserPage> {
   }
 
   void _showIncidentDialog(String id) {
-    // Chiama sempre la funzione di eliminazione dell'incidente
     _deleteIncident(id);
 
-    // Mostra il dialogo con la notifica dell'eliminazione
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // Timer per chiudere automaticamente il dialogo dopo 5 secondi
+        // Timer per chiudere automaticamente il dialogo dopo 3 secondi
         Future.delayed(Duration(seconds: 3), () {
           if (Navigator.canPop(context)) {
-            Navigator.of(context).pop();  // Chiude il dialogo automaticamente
+            Navigator.of(context).pop();
           }
         });
 
@@ -124,7 +123,7 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  // Funzione per inviare la richiesta DELETE all'API
+  // Funzione cancellare un incidente dal database
   Future<void> _deleteIncident(String id) async {
     final url = Uri.parse('http://192.168.103.187:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
 
@@ -143,8 +142,7 @@ class _UserPageState extends State<UserPage> {
     }
   }
 
-  // Funzione per inviare l'email tramite l'API
-  Future<void> _sendEmail(String emailReceiver, String username) async {
+  /*Future<void> _sendEmail(String emailReceiver, String username) async {
     // URL dell'API per inviare l'email, sostituisci con il tuo indirizzo IP/server
     final url = Uri.parse('http://192.168.103.187:5001/api/send_email/$emailReceiver/$username');
 
@@ -162,7 +160,7 @@ class _UserPageState extends State<UserPage> {
     } catch (e) {
       print('Errore di connessione all\'API: $e');
     }
-  }
+  }*/
 
   void _initializeMqttClient() async {
     _client = MqttServerClient('test.mosquitto.org', 'flutter_client');
@@ -201,7 +199,7 @@ class _UserPageState extends State<UserPage> {
       print('Message content: $message');
 
       setState(() {
-        latestMessage = message;  //Assegna il nuovo messaggio a latestMessage
+        latestMessage = message;
 
         // Controlla se il messaggio contiene la parola "incidente"
         if (latestMessage != null && latestMessage!.contains('INCIDENTE')) {

@@ -14,7 +14,6 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  // Controller per i campi di input
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController cognomeController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
@@ -52,7 +51,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/registrazione');
+    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/registrazione');
     final response = await http.post(
       url,
       headers: <String, String>{
@@ -272,7 +271,6 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 }
 
-// Widget per i campi di input
 Widget inputFile({
   required String label,
   required TextEditingController controller,
@@ -303,7 +301,7 @@ Widget inputFile({
         cursorColor: Colors.grey[300],
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-          prefixIcon: Icon(icon, color: Colors.grey[300]), // Icona a sinistra
+          prefixIcon: Icon(icon, color: Colors.grey[300]),
           suffixIcon: isPassword
               ? IconButton(
             icon: Icon(
@@ -312,7 +310,7 @@ Widget inputFile({
             ),
             onPressed: togglePasswordVisibility,
           )
-              : null, // Icona per la visibilità della password
+              : null,
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),

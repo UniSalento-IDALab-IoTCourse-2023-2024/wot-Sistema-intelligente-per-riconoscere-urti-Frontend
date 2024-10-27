@@ -27,7 +27,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _obscurePassword = true; // Stato per la visibilità della password
+  bool _obscurePassword = true;
 
   Future<void> _login() async {
     final username = _usernameController.text;
@@ -56,10 +56,10 @@ class _LoginFormState extends State<LoginForm> {
         MaterialPageRoute(builder: (context) => AdminPage()),
             (Route<dynamic> route) => false,
       );
-      return; // Termina qui se l'utente è admin
+      return;
     }
 
-    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/login');
+    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/login'); // Cambia l'URL se necessario
     final response = await http.post(
       url,
       headers: <String, String>{
@@ -286,14 +286,14 @@ Widget inputFile({required TextEditingController controller, required String lab
           focusedBorder: OutlineInputBorder(
               borderSide: const BorderSide(width: 2, color: Color(0XFF29E2FD))),
           contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-          prefixIcon: Icon(icon, color: Colors.grey[300]), // Icona a sinistra
+          prefixIcon: Icon(icon, color: Colors.grey[300]),
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),
           border: const OutlineInputBorder(
             borderSide: BorderSide(color: Colors.grey),
           ),
-          suffixIcon: toggleObscureText != null // Aggiungi icona per mostrare/nascondere password
+          suffixIcon: toggleObscureText != null
               ? IconButton(
             icon: Icon(
               obscureText ? Icons.visibility_off : Icons.visibility,

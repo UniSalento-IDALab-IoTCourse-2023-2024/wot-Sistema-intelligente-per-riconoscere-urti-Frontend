@@ -23,7 +23,7 @@ class IntroPage3 extends StatelessWidget{
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),  // Spazio tra l'immagine e il testo
+                const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 25),
                   child: Text(

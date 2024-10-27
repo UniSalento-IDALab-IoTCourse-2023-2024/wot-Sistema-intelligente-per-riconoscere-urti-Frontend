@@ -51,7 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen>{
   }
 
   Future<void> _findUser() async {
-    final url = Uri.parse('http://192.168.1.13:5001/api/utenti/find_by_username/$username'); // Cambia l'URL se necessario
+    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/find_by_username/$username');
     try {
       final response = await http.get(
         url,
@@ -78,16 +78,6 @@ class _ProfileScreenState extends State<ProfileScreen>{
     } catch (error) {
       print('Errore nella richiesta: $error');
     }
-  }
-
-  // Funzione per mostrare una notifica temporanea
-  void _showNotImplementedMessage() {
-    final snackBar = SnackBar(
-      content: Text("Funzionalità non ancora implementata"),
-      backgroundColor: Colors.redAccent,
-      duration: Duration(seconds: 3), // La durata del messaggio
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
@@ -118,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen>{
                                 height: 120,
                                 child: CircleAvatar(
                                   radius: 40,
-                                  backgroundColor: Color(0XFF29E2FD), // Cambia colore di sfondo se necessario
+                                  backgroundColor: Color(0XFF29E2FD),
                                   child: Text(
                                     "${nome?[0] ?? ''}${cognome?[0] ?? ''}", // Mostra la prima lettera del nome e del cognome
                                     style: TextStyle(
@@ -129,23 +119,6 @@ class _ProfileScreenState extends State<ProfileScreen>{
                                   ),
                                 ),
                               ),
-                              /*Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: Container(
-                                  height: 35,
-                                  width: 35,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: Color(0XFF29E2FD),
-                                  ),
-                                  child: Icon(
-                                    Icons.mode,
-                                    color: Colors.black,
-                                    size: 20,
-                                  ),
-                                ),
-                              ),*/
                             ],
                           ),
                           const SizedBox(height: 10,),
@@ -169,25 +142,6 @@ class _ProfileScreenState extends State<ProfileScreen>{
                                 Navigator.push(context, MaterialPageRoute(builder: (e) => MyAccountPage()));
                               }
                           ),
-                          // ProfileMenuWidget(
-                          //   title: "billing details",
-                          //   icon: Icons.wallet,
-                          //   endIcon: true,
-                          //   onPress: _showNotImplementedMessage,  // Mostra il messaggio di funzionalità non implementata
-                          // ),
-                          // ProfileMenuWidget(
-                          //   title: "User Management",
-                          //   icon: Icons.check,
-                          //   endIcon: true,
-                          //   onPress: _showNotImplementedMessage,  // Mostra il messaggio di funzionalità non implementata
-                          // ),
-                          // const Divider(color: Colors.grey,),
-                          // ProfileMenuWidget(
-                          //   title: "Information",
-                          //   icon: Icons.info,
-                          //   endIcon: true,
-                          //   onPress: _showNotImplementedMessage,  // Mostra il messaggio di funzionalità non implementata
-                          // ),
                         ],
                       ),
                     ),

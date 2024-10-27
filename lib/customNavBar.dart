@@ -200,7 +200,7 @@ class _CustomNavBarState extends State<CustomNavBar>{
             children: [
               Icon(Icons.warning, color: Colors.redAccent),
               SizedBox(width: 10),
-              Expanded( // Usa Expanded per assicurarti che il titolo sia dinamico
+              Expanded(
                 child: Text(
                   'Conferma Logout',
                   style: TextStyle(
@@ -211,9 +211,9 @@ class _CustomNavBarState extends State<CustomNavBar>{
               ),
             ],
           ),
-          content: SingleChildScrollView( // Aggiungi uno scroll per gestire lo spazio disponibile
+          content: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Riduci lo spazio occupato dal contenuto
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -236,7 +236,7 @@ class _CustomNavBarState extends State<CustomNavBar>{
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Navigator.of(context).pop(); // Chiude il dialogo
+                Navigator.of(context).pop();
                 Navigator.push(context, MaterialPageRoute(builder: (e) => HomePage())); // Chiude l'app o ritorna alla schermata precedente
               },
             ),
@@ -252,7 +252,7 @@ class _CustomNavBarState extends State<CustomNavBar>{
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Navigator.of(context).pop(); // Chiude il dialogo
+                Navigator.of(context).pop();
               },
             ),
           ],

@@ -10,25 +10,27 @@ public class MqttHandler {
 
     private MqttClient client;
 
+    // Metodo per connettersi al broker MQTT
     public void connect(String brokerUrl, String clientId) {
         try {
-            // Set up the persistence layer
+            // Crea persistenza in memoria
             MemoryPersistence persistence = new MemoryPersistence();
 
-            // Initialize the MQTT client
+            // Inizializza client MQTT
             client = new MqttClient(brokerUrl, clientId, persistence);
 
-            // Set up the connection options
+            // Configura le opzioni di connessione
             MqttConnectOptions connectOptions = new MqttConnectOptions();
             connectOptions.setCleanSession(false);
 
-            // Connect to the broker
+            // Connessione al broker
             client.connect(connectOptions);
         } catch (MqttException e) {
             e.printStackTrace();
         }
     }
 
+    // Metodo per disconnettersi dal broker MQTT
     public void disconnect() {
         try {
             client.disconnect();
@@ -37,6 +39,7 @@ public class MqttHandler {
         }
     }
 
+    // Metodo per pubblicare un messaggio su uno specifico topic. Imposta QoS a 1
     public void publish(String topic, String message) {
         try {
             MqttMessage mqttMessage = new MqttMessage(message.getBytes());
@@ -47,6 +50,7 @@ public class MqttHandler {
         }
     }
 
+    // Metodo di sottoscrizione ad un preciso topic per ricevere messaggi inviati a quel preciso canale
     public void subscribe(String topic) {
         try {
             client.subscribe(topic);
