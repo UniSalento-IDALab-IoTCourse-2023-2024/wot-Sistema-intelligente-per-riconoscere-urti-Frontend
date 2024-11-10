@@ -19,6 +19,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController telefonoController = TextEditingController();
 
+  String? token;
+
   @override
   void initState() {
     super.initState();
@@ -27,18 +29,19 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
   Future<void> _loadToken() async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
+    final token1 = prefs.getString('auth_token');
 
-    if (token != null) {
-      final decodedToken = JwtDecoder.decode(token);
+    if (token1 != null) {
+      final decodedToken = JwtDecoder.decode(token1);
       setState(() {
         username = decodedToken['user'];
+        token = token1;
       });
     }
   }
 
   Future<void> _updateUser() async {
-    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/update/$username');
+    final url = Uri.parse('http://192.168.1.22:5001/api/utenti/update/$username');
 
     // Crea un oggetto JSON dinamico che includa solo i campi non vuoti
     Map<String, dynamic> body = {};
@@ -59,7 +62,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     // Se non ci sono campi da aggiornare, esci dalla funzione
     if (body.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Nessun campo da aggiornare')),
+        SnackBar(content: Text('Nessun campo da aggiornare'), backgroundColor: Colors.red,),
       );
       return;
     }
@@ -67,6 +70,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     final response = await http.put(
       url,
       headers: {
+        'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
       },
       body: jsonEncode(body),
@@ -74,12 +78,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Utente aggiornato con successo')),
+        SnackBar(content: Text('Utente aggiornato con successo'), backgroundColor: Colors.green,),
       );
       Navigator.push(context, MaterialPageRoute(builder: (e) => CustomNavBar()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Errore durante l\'aggiornamento')),
+        SnackBar(content: Text('Errore durante l\'aggiornamento'), backgroundColor: Colors.red,),
       );
     }
   }

@@ -16,6 +16,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
   String? _errorMessage;
   bool _isListVisible = false; // Flag per mostrare o nascondere la lista
   String? username;
+  String? token;
 
   @override
   void initState() {
@@ -25,12 +26,13 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
 
   Future<void> _loadToken() async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
+    final token1 = prefs.getString('auth_token');
 
-    if (token != null) {
-      final decodedToken = JwtDecoder.decode(token);
+    if (token1 != null) {
+      final decodedToken = JwtDecoder.decode(token1);
       setState(() {
         username = decodedToken['user'];
+        token = token1;
       });
     }
   }
@@ -50,17 +52,25 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       _isLoading = true;
       _errorMessage = null;
     });
+
     try {
-      final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/incidenti/get_incidenti_by_username/$username'));
+      // Prepara l'header con il Bearer token
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json', // Opzionale, ma buona pratica
+      };
+
+      // Effettua la richiesta GET con l'header
+      final response = await http.get(
+        Uri.parse('http://192.168.1.22:5001/api/incidenti/get_incidenti_by_username/$username'),
+        headers: headers,
+      );
 
       if (response.statusCode == 200) {
-        // Verifica il corpo della risposta
         print('Incident Response body: ${response.body}');
 
-        // Decodifica la risposta JSON come lista
         final List<dynamic> data = json.decode(response.body);
 
-        // Assicurati che ogni elemento sia una mappa e estrai gli incidenti
         setState(() {
           _incidents = data.map((item) {
             if (item is Map<String, dynamic>) {
@@ -70,7 +80,6 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
             }
           }).toList();
 
-          // Ordina gli incidenti in ordine decrescente (dal più recente)
           _incidents.sort((a, b) {
             DateTime dateA = HttpDate.parse(a); // Usa HttpDate.parse()
             DateTime dateB = HttpDate.parse(b);
@@ -81,7 +90,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
         });
       } else {
         setState(() {
-          _errorMessage = 'Failed to load incidents';
+          _errorMessage = 'Failed to load incidents: ${response.statusCode}';
         });
       }
     } catch (e) {
@@ -94,6 +103,7 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 import 'main.dart';
@@ -20,40 +22,93 @@ class _AdminPageState extends State<AdminPage> {
   bool _showList = false;
 
   int userCount = 0;
+  String? token;
 
   @override
   void initState() {
     super.initState();
-    _loadIncidents();
-    fetchUserCount();
-    fetchUsers();
+    _loadTokenAndFetchData();
+  }
+
+  Future<void> _loadTokenAndFetchData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedToken = prefs.getString('auth_token');
+
+    if (savedToken != null) {
+      setState(() {
+        token = savedToken;
+      });
+      await fetchUserCount();
+      await fetchUsers();
+      await _loadIncidents();
+    } else {
+      setState(() {
+        _errorMessage = 'Token non trovato. Effettua nuovamente il login.';
+      });
+    }
+  }
+
+  Map<String, String> _buildHeaders() {
+    return {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json',
+    };
   }
 
   Future<void> fetchUserCount() async {
-    final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/utenti/'));
-    if (response.statusCode == 200) {
-      List<dynamic> users = json.decode(response.body);
+    try {
+      final response = await http.get(
+        Uri.parse('http://192.168.1.22:5001/api/utenti/'),
+        headers: _buildHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> users = json.decode(response.body);
+        setState(() {
+          // Filtra gli utenti che non sono "admin" e calcola il conteggio
+          userCount = users
+              .where((user) => user['username'].toString().toLowerCase() != 'admin')
+              .length;
+        });
+      } else {
+        throw Exception('Failed to load users');
+      }
+    } catch (e) {
       setState(() {
-        userCount = users.length;
+        _errorMessage = 'Errore caricando il numero di utenti: $e';
       });
-    } else {
-      throw Exception('Failed to load users');
     }
   }
 
+
   Future<void> fetchUsers() async {
-    final response = await http.get(Uri.parse('http://192.168.103.187:5001/api/utenti/'));
-    if (response.statusCode == 200) {
-      List<dynamic> users = json.decode(response.body);
+    try {
+      final response = await http.get(
+        Uri.parse('http://192.168.1.22:5001/api/utenti/'),
+        headers: _buildHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        List<dynamic> users = json.decode(response.body);
+        setState(() {
+          _users = ['Tutti'] +
+              users
+                  .where((user) => user['username'].toString().toLowerCase() != 'admin')
+                  .map<String>((user) => user['username'].toString())
+                  .toList();
+        });
+      } else {
+        setState(() {
+          _errorMessage = 'Failed to load users';
+        });
+      }
+    } catch (e) {
       setState(() {
-        _users = ['Tutti'] + users.map<String>((user) => user['username'].toString()).toList();
-      });
-    } else {
-      setState(() {
-        _errorMessage = 'Failed to load users';
+        _errorMessage = 'Errore caricando gli utenti: $e';
       });
     }
   }
+
 
   Future<void> _loadIncidents([String? username]) async {
     setState(() {
@@ -63,10 +118,13 @@ class _AdminPageState extends State<AdminPage> {
 
     try {
       String apiUrl = username == null || username == 'Tutti'
-          ? 'http://192.168.103.187:5001/api/incidenti/'
-          : 'http://192.168.103.187:5001/api/incidenti/get_incidenti_by_username/$username';
+          ? 'http://192.168.1.22:5001/api/incidenti/'
+          : 'http://192.168.1.22:5001/api/incidenti/get_incidenti_by_username/$username';
 
-      final response = await http.get(Uri.parse(apiUrl));
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: _buildHeaders(),
+      );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
@@ -93,7 +151,7 @@ class _AdminPageState extends State<AdminPage> {
       }
     } catch (e) {
       setState(() {
-        _errorMessage = 'Error fetching incidents: $e';
+        _errorMessage = 'Errore caricando gli incidenti: $e';
       });
     } finally {
       setState(() {

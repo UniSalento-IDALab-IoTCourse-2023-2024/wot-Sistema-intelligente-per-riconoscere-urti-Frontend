@@ -29,6 +29,8 @@ class _UserPageState extends State<UserPage> {
 
   String? username;
 
+  String? token;
+
   late stt.SpeechToText _speech;
   bool _isListening = false;
   String recognizedWord = '';
@@ -125,10 +127,15 @@ class _UserPageState extends State<UserPage> {
 
   // Funzione cancellare un incidente dal database
   Future<void> _deleteIncident(String id) async {
-    final url = Uri.parse('http://192.168.103.187:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
+    final url = Uri.parse('http://192.168.1.22:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
 
     try {
-      final response = await http.delete(url);
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json', // Opzionale, ma buona pratica
+      };
+
+      final response = await http.delete(url, headers: headers);
 
       if (response.statusCode == 200) {
         print('Incidente eliminato con successo');
@@ -286,13 +293,14 @@ class _UserPageState extends State<UserPage> {
 
   Future<void> _loadToken() async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
+    final token1 = prefs.getString('auth_token');
 
-    if (token != null) {
-      final decodedToken = JwtDecoder.decode(token);
+    if (token1 != null) {
+      final decodedToken = JwtDecoder.decode(token1);
 
       setState(() {
         username = decodedToken['user'];
+        token = token1;
       });
 
       await usernameChannel.invokeMethod('setUsername', {'username': username});

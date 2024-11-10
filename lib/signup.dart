@@ -51,7 +51,7 @@ class _SignUpPageState extends State<SignUpPage> {
       return;
     }
 
-    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/registrazione');
+    final url = Uri.parse('http://192.168.1.22:5001/api/utenti/registrazione');
     final response = await http.post(
       url,
       headers: <String, String>{

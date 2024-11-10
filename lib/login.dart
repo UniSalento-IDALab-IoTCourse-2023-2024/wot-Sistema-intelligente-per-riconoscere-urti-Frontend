@@ -49,17 +49,7 @@ class _LoginFormState extends State<LoginForm> {
       return;
     }
 
-    // Controllo se lo username e la password sono "admin"
-    if (username == 'admin' && password == 'admin') {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => AdminPage()),
-            (Route<dynamic> route) => false,
-      );
-      return;
-    }
-
-    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/login'); // Cambia l'URL se necessario
+    final url = Uri.parse('http://192.168.1.22:5001/api/utenti/login'); // Cambia l'URL se necessario
     final response = await http.post(
       url,
       headers: <String, String>{
@@ -90,6 +80,17 @@ class _LoginFormState extends State<LoginForm> {
           backgroundColor: Colors.green,
         ),
       );
+
+      // Controllo se lo username e la password sono "admin"
+      if (username == 'admin' && password == 'admin') {
+        print("Token: $token");
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => AdminPage()),
+              (Route<dynamic> route) => false,
+        );
+        return;
+      }
 
       Navigator.pushAndRemoveUntil(
         context,

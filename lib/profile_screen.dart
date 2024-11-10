@@ -23,6 +23,8 @@ class _ProfileScreenState extends State<ProfileScreen>{
   String? email;
   String? numeroTelefono;
 
+  String? token;
+
   @override
   void initState() {
     super.initState();
@@ -31,16 +33,17 @@ class _ProfileScreenState extends State<ProfileScreen>{
 
   Future<void> _loadToken() async {
     final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('auth_token');
+    final token1 = prefs.getString('auth_token');
 
-    if (token != null) {
-      final decodedToken = JwtDecoder.decode(token);
+    if (token1 != null) {
+      final decodedToken = JwtDecoder.decode(token1);
       decodedToken.forEach((key, value) {
         print('$key: $value');
       });
 
       setState(() {
         username = decodedToken['user'];
+        token = token1;
       });
 
       // Dopo aver impostato il nome utente, chiama l'API per ottenere i dettagli dell'utente
@@ -51,11 +54,12 @@ class _ProfileScreenState extends State<ProfileScreen>{
   }
 
   Future<void> _findUser() async {
-    final url = Uri.parse('http://192.168.103.187:5001/api/utenti/find_by_username/$username');
+    final url = Uri.parse('http://192.168.1.22:5001/api/utenti/find_by_username/$username');
     try {
       final response = await http.get(
         url,
         headers: <String, String>{
+          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
