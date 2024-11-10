@@ -52,7 +52,6 @@ class _UserPageState extends State<UserPage> {
   Future<void> _speakAndListen() async {
     await _flutterTts.speak("Hai fatto un incidente??");
 
-    // Quando il messaggio termia avvia il riconoscimento vocale
     _flutterTts.setCompletionHandler(() {
       _startListening();
     });
@@ -68,7 +67,6 @@ class _UserPageState extends State<UserPage> {
         _isListening = true;
       });
 
-      // Imposta il tempo di ascolto a 5 secondi
       _speech.listen(
         onResult: (val) {
           setState(() {
@@ -76,11 +74,10 @@ class _UserPageState extends State<UserPage> {
           });
           _handleRecognizedWord(recognizedWord);  // Invia i risultati alla funzione _handleRecognizedWord
         },
-        listenFor: Duration(seconds: 5),  // Ascolta per 5 secondi
+        listenFor: Duration(seconds: 5),
         pauseFor: Duration(seconds: 5),
       );
 
-      // Chiudi automaticamente l'ascolto dopo 5 secondi
       Future.delayed(Duration(seconds: 5), () {
         _speech.stop();
         setState(() {
@@ -111,7 +108,6 @@ class _UserPageState extends State<UserPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // Timer per chiudere automaticamente il dialogo dopo 3 secondi
         Future.delayed(Duration(seconds: 3), () {
           if (Navigator.canPop(context)) {
             Navigator.of(context).pop();
@@ -125,14 +121,13 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
-  // Funzione cancellare un incidente dal database
   Future<void> _deleteIncident(String id) async {
-    final url = Uri.parse('http://192.168.1.22:5001/api/incidenti/delete/$id');  // Modifica con il tuo URL del server
+    final url = Uri.parse('http://192.168.1.22:5001/api/incidenti/delete/$id');
 
     try {
       final headers = {
         'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json', // Opzionale, ma buona pratica
+        'Content-Type': 'application/json',
       };
 
       final response = await http.delete(url, headers: headers);

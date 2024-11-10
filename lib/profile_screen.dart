@@ -46,7 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen>{
         token = token1;
       });
 
-      // Dopo aver impostato il nome utente, chiama l'API per ottenere i dettagli dell'utente
       if (username != null) {
         await _findUser();
       }
@@ -114,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen>{
                                   radius: 40,
                                   backgroundColor: Color(0XFF29E2FD),
                                   child: Text(
-                                    "${nome?[0] ?? ''}${cognome?[0] ?? ''}", // Mostra la prima lettera del nome e del cognome
+                                    "${nome?[0] ?? ''}${cognome?[0] ?? ''}",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 50,

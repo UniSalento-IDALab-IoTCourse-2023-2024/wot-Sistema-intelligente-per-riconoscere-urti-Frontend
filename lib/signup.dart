@@ -25,7 +25,6 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _passwordVisible = false;  // Per controllare la visibilità della password
   bool _confermaPasswordVisible = false;  // Per controllare la visibilità della conferma password
 
-  // Funzione per registrare l'utente
   void _registerUser(BuildContext context) async {
     final nome = nomeController.text;
     final cognome = cognomeController.text;

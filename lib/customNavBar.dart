@@ -237,7 +237,7 @@ class _CustomNavBarState extends State<CustomNavBar>{
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.push(context, MaterialPageRoute(builder: (e) => HomePage())); // Chiude l'app o ritorna alla schermata precedente
+                Navigator.push(context, MaterialPageRoute(builder: (e) => HomePage()));
               },
             ),
             TextButton(
@@ -260,6 +260,4 @@ class _CustomNavBarState extends State<CustomNavBar>{
       },
     );
   }
-
-
 }

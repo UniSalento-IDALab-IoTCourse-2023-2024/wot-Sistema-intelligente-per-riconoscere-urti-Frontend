@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io'; // Importa la libreria dart:io
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -54,13 +54,12 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
     });
 
     try {
-      // Prepara l'header con il Bearer token
+
       final headers = {
         'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json', // Opzionale, ma buona pratica
+        'Content-Type': 'application/json',
       };
 
-      // Effettua la richiesta GET con l'header
       final response = await http.get(
         Uri.parse('http://192.168.1.22:5001/api/incidenti/get_incidenti_by_username/$username'),
         headers: headers,
@@ -81,12 +80,12 @@ class _AccidentBrakingPageState extends State<AccidentBrakingPage> {
           }).toList();
 
           _incidents.sort((a, b) {
-            DateTime dateA = HttpDate.parse(a); // Usa HttpDate.parse()
+            DateTime dateA = HttpDate.parse(a);
             DateTime dateB = HttpDate.parse(b);
             return dateB.compareTo(dateA);
           });
 
-          _isListVisible = true; // Mostra la lista
+          _isListVisible = true;
         });
       } else {
         setState(() {

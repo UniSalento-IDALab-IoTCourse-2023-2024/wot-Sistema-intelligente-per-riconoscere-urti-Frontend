@@ -67,7 +67,6 @@ class _MyAccountPageState extends State<MyAccountPage> {
         token = token1;
       });
 
-      // Dopo aver impostato il nome utente, chiama l'API per ottenere i dettagli dell'utente
       if (username != null) {
         await _findUser();
       }
@@ -132,7 +131,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => HomePage()),
-              (route) => false, // Elimina tutte le rotte precedenti
+              (route) => false,
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -265,9 +264,9 @@ class _MyAccountPageState extends State<MyAccountPage> {
                             height: 120,
                             child: CircleAvatar(
                               radius: 40,
-                              backgroundColor: Color(0XFF29E2FD), // Cambia colore di sfondo se necessario
+                              backgroundColor: Color(0XFF29E2FD),
                               child: Text(
-                                "${nome?[0] ?? ''}${cognome?[0] ?? ''}", // Mostra la prima lettera del nome e del cognome
+                                "${nome?[0] ?? ''}${cognome?[0] ?? ''}",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 50,
@@ -348,7 +347,7 @@ class _MyAccountPageState extends State<MyAccountPage> {
                               child: const Text("Modifica")
                           ),
                           ElevatedButton(
-                            onPressed: () => _showDeleteAccountDialog(context),  // Chiama il dialogo di conferma
+                            onPressed: () => _showDeleteAccountDialog(context),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.redAccent.withOpacity(0.3),
                               elevation: 0,
@@ -377,7 +376,7 @@ Widget input({
   required TextEditingController controller,
   required IconData icon,
   required String label,
-  bool readOnly = false, // Usa readOnly al posto di enabled
+  bool readOnly = false,
 }) {
   return Form(
     child: Column(
@@ -386,7 +385,7 @@ Widget input({
           controller: controller,
           style: TextStyle(color: Colors.grey[300]),
           cursorColor: Colors.grey[300],
-          readOnly: readOnly, // Imposta readOnly per disabilitare l'editing mantenendo i bordi
+          readOnly: readOnly,
           decoration: InputDecoration(
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(100),

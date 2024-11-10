@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -65,7 +64,6 @@ class _AdminPageState extends State<AdminPage> {
       if (response.statusCode == 200) {
         List<dynamic> users = json.decode(response.body);
         setState(() {
-          // Filtra gli utenti che non sono "admin" e calcola il conteggio
           userCount = users
               .where((user) => user['username'].toString().toLowerCase() != 'admin')
               .length;
@@ -165,7 +163,7 @@ class _AdminPageState extends State<AdminPage> {
       return Center(child: Text('Nessun dato disponibile', style: TextStyle(color: Colors.white)));
     }
 
-    // Raggruppa gli incidenti per giorno e conta quanti ce ne sono per ogni giorno
+
     Map<String, int> incidentsPerDay = {};
     for (var incident in _incidents) {
       final date = HttpDate.parse(incident['date']!);
@@ -173,7 +171,7 @@ class _AdminPageState extends State<AdminPage> {
       incidentsPerDay[dayKey] = (incidentsPerDay[dayKey] ?? 0) + 1;
     }
 
-    // Ordina le date
+
     var sortedDays = incidentsPerDay.keys.toList()..sort();
 
     return Padding(
@@ -190,7 +188,7 @@ class _AdminPageState extends State<AdminPage> {
                   if (value.toInt() >= 0 && value.toInt() < sortedDays.length) {
                     final dateParts = sortedDays[value.toInt()].split('-');
                     return Transform.rotate(
-                      angle: -45 * 3.14159 / 180, // Converti gradi in radianti
+                      angle: -45 * 3.14159 / 180, // Converto gradi in radianti
                       child: Text(
                         '${dateParts[2]}/${dateParts[1]}',
                         style: TextStyle(color: Colors.white, fontSize: 10),
@@ -309,11 +307,11 @@ class _AdminPageState extends State<AdminPage> {
             SizedBox(height: 20),
             Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12), // Padding interno
+                padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: Colors.grey[800], // Colore di sfondo del dropdown
-                  borderRadius: BorderRadius.circular(12), // Bordi arrotondati
-                  border: Border.all(color: Colors.white, width: 1), // Bordo bianco sottile
+                  color: Colors.grey[800],
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white, width: 1),
                 ),
                 child: DropdownButton<String>(
                   value: _selectedUser,
@@ -325,10 +323,10 @@ class _AdminPageState extends State<AdminPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  dropdownColor: Colors.grey[850], // Colore più scuro per il dropdown
+                  dropdownColor: Colors.grey[850],
                   icon: Icon(Icons.arrow_downward, color: Colors.white),
-                  underline: Container(), // Rimuove la linea sottostante
-                  style: TextStyle(color: Colors.white), // Colore del testo degli elementi
+                  underline: Container(),
+                  style: TextStyle(color: Colors.white),
                   items: _users.map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
@@ -403,10 +401,10 @@ class _AdminPageState extends State<AdminPage> {
                 itemBuilder: (context, index) {
                   final incident = _incidents.reversed.toList()[index];
                   return Container(
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10), // Aggiunge un po' di spazio attorno a ogni incidente
+                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: 1), // Bordi bianchi di spessore 1
-                      borderRadius: BorderRadius.circular(8), // Arrotondamento degli angoli
+                      border: Border.all(color: Colors.white, width: 1),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: ListTile(
                       title: Text('Data: ${incident['date']}', style: TextStyle(color: Colors.grey[300])),
@@ -434,7 +432,7 @@ class _AdminPageState extends State<AdminPage> {
             children: [
               Icon(Icons.warning, color: Colors.redAccent),
               SizedBox(width: 10),
-              Expanded( // Usa Expanded per assicurarti che il titolo sia dinamico
+              Expanded(
                 child: Text(
                   'Conferma Logout',
                   style: TextStyle(
@@ -445,9 +443,9 @@ class _AdminPageState extends State<AdminPage> {
               ),
             ],
           ),
-          content: SingleChildScrollView( // Aggiungi uno scroll per gestire lo spazio disponibile
+          content: SingleChildScrollView(
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Riduci lo spazio occupato dal contenuto
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -470,8 +468,8 @@ class _AdminPageState extends State<AdminPage> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Navigator.of(context).pop(); // Chiude il dialogo
-                Navigator.push(context, MaterialPageRoute(builder: (e) => HomePage())); // Chiude l'app o ritorna alla schermata precedente
+                Navigator.of(context).pop();
+                Navigator.push(context, MaterialPageRoute(builder: (e) => HomePage()));
               },
             ),
             TextButton(
@@ -486,7 +484,7 @@ class _AdminPageState extends State<AdminPage> {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                Navigator.of(context).pop(); // Chiude il dialogo
+                Navigator.of(context).pop();
               },
             ),
           ],

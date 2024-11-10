@@ -54,8 +54,8 @@ class _OnBoardingScreenState extends State<OnBoardingScreen>{
                     controller: _controller,
                     count: 3,
                     effect: WormEffect(
-                      dotColor: Colors.grey, // Colore dei pallini non attivi
-                      activeDotColor: Color(0XFF29E2FD), // Colore del pallino attivo
+                      dotColor: Colors.grey,
+                      activeDotColor: Color(0XFF29E2FD),
                   ),),
                   onLastPage ? GestureDetector(
                       onTap: (){

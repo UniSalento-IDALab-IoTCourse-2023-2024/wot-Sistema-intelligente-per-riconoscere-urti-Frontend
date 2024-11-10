@@ -1,6 +1,4 @@
 import 'package:app_iot/customNavBar.dart';
-import 'package:app_iot/home.dart';
-import 'package:app_iot/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';

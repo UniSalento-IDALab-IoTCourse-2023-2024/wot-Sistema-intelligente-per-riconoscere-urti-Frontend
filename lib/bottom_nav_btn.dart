@@ -43,7 +43,7 @@ class BottomNavBtn extends StatelessWidget {
                 ),
               ),
 
-            // Updated logic for opacity
+
             AnimatedOpacity(
               opacity: (index == totalIcons - 1 || currentIndex == index) ? 1 : 0.2,
               duration: const Duration(milliseconds: 300),
