@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -121,8 +123,41 @@ class _UserPageState extends State<UserPage> {
     );
   }
 
+  Future<void> _saveIncident() async {
+    final url = Uri.parse('http://192.168.103.187:5001/api/incidenti/add_incidenti');
+
+    try {
+      final headers = {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      };
+
+      // Include the username in the body
+      final body = jsonEncode({
+        "cliente_incidentato": username,
+      });
+
+      final response = await http.post(url, headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        print('Incidente salvato con successo');
+        final responseData = jsonDecode(response.body);
+
+        // Extract incident ID from the response
+        incidentId = responseData['id'];
+
+        // Initiate voice recognition
+        _speakAndListen();
+      } else {
+        print('Errore durante il salvataggio dell\'incidente: ${response.body}');
+      }
+    } catch (e) {
+      print('Errore di connessione all\'API: $e');
+    }
+  }
+
   Future<void> _deleteIncident(String id) async {
-    final url = Uri.parse('http://192.168.1.22:5001/api/incidenti/delete/$id');
+    final url = Uri.parse('http://192.168.103.187:5001/api/incidenti/delete/$id');
 
     try {
       final headers = {
@@ -205,11 +240,8 @@ class _UserPageState extends State<UserPage> {
 
         // Controlla se il messaggio contiene la parola "incidente"
         if (latestMessage != null && latestMessage!.contains('INCIDENTE')) {
+          _saveIncident();
           print('Incidente rilevato! Avvio del riconoscimento vocale.');
-
-          // Estrai l'ID dell'incidente dal messaggio
-          final idStartIndex = latestMessage!.indexOf('ID Incidente:') + 'ID Incidente:'.length;
-          incidentId = latestMessage!.substring(idStartIndex).trim();
 
           latestMessage = 'INCIDENTE';
 
