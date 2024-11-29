@@ -12,7 +12,7 @@ L'interfaccia è facile ed intuitiva e permette agli utenti di registrarsi, fare
 - - -
 
 <div align="center">
-  <img src="https://i.ibb.co/9tbRGK7/architettura.jpg" alt="Architettura" width="400"/>
+  <img src="https://i.ibb.co/0GdR93q/Immagine-Whats-App-2024-11-13-ore-18-59-09-a730b518.jpg" alt="Architettura" width="400"/>
 </div>
 
 
